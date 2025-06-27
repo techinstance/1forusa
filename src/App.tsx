@@ -1,14 +1,13 @@
-import { View,Text,StyleSheet } from "react-native"
 import { NavigationContainer } from "@react-navigation/native";
 import {createNativeStackNavigator} from "@react-navigation/native-stack"
 
 import Home from "./screens/Home";
 import Activites from "./screens/Activites";
 import Profile from "./screens/Profile";
-import Socail from "./screens/Socail";
+import Social from "./screens/Social";
 export type RootStackParamList = {
   Home : undefined;
-  Socail : undefined;
+  Social : undefined;
   Activites : undefined;
   Profile : undefined;
 }
@@ -18,7 +17,7 @@ const App = () =>{
     <NavigationContainer>
      <Stack.Navigator initialRouteName="Home">
       <Stack.Screen name="Home" component={Home}/>
-      <Stack.Screen name="Socail" component = {Socail} />
+      <Stack.Screen name="Social" component = {Social} />
       <Stack.Screen name="Activites" component = {Activites} />
       <Stack.Screen name="Profile" component = {Profile} />
      </Stack.Navigator>
@@ -26,7 +25,3 @@ const App = () =>{
   )
 }
 export default App;
-
-const styles = StyleSheet.create({
-
-})
