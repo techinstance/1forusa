@@ -104,3 +104,12 @@ To learn more about React Native, take a look at the following resources:
 - Corrected spelling of 'Social' in navigation and components
 - Integrated Footer component into screens for consistent layout
 - Improved styling and structure across various screens
+
+## Updates - 30th June 2025 - Aditya Vijayvargiya
+
+- Implemented PostCreationModal for post creation functionality
+- Enhanced Post Creation Modal with smoother animations
+- Removed Slider component - Not Needed
+- Improved Navigation flow for better user experience
+
+
