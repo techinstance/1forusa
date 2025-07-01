@@ -1,29 +1,61 @@
-import { View,Text , StyleSheet} from "react-native"
+import { View, StyleSheet, PanResponder, Text } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
-import Footer from "../components/Footer";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Slider from "@react-native-community/slider";
+import Footer from "../components/Footer";
+import GlobalQuesitions from "../components/GlobalQuestions";
+import SliderComponent from "../components/elements/SliderComponent";
+import Scroll from "../components/elements/Scroll";
+import TextBoxComponent from "../components/elements/TextBoxComponent";
+import TileGrid from "../components/elements/TileGrid";
+import { useState, useRef } from "react";
 
+type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>
-const Home = ({navigation} : HomeProps) =>{
-    return (
-        <SafeAreaView style={styles.container}>
-            {/* <GlobalQuesitions/> */}
-            <View>
-              <Slider/>
-            </View>
-            <Footer/>
-        </SafeAreaView>
-    )
-}
+const Home = ({ navigation }: HomeProps) => {
+  const components = [SliderComponent, Scroll, TextBoxComponent, TileGrid];
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onMoveShouldSetPanResponder: (_, gestureState) => {
+        return Math.abs(gestureState.dx) > 20;
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dx > 50) {
+          // Swipe Right
+          setCurrentIndex((prev) => (prev - 1 + components.length) % components.length);
+        } else if (gestureState.dx < -50) {
+          // Swipe Left
+          setCurrentIndex((prev) => (prev + 1) % components.length);
+        }
+      },
+    })
+  ).current;
+
+  const CurrentComponent = components[currentIndex];
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <GlobalQuesitions />
+      <View style={styles.mainscreen} {...panResponder.panHandlers}>
+        <CurrentComponent />
+      </View>
+      <Footer />
+    </SafeAreaView>
+  );
+};
+
 export default Home;
 
 const styles = StyleSheet.create({
-    container : {
-        flex : 1,
-        alignItems : "center",
-        justifyContent : "center"
-    }
+  container: {
+    flex: 1,
+    alignItems: "center",
+  },
+  mainscreen: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+  },
 });

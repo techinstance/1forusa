@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { RootStackParamList } from "../App";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 type SocailProps = NativeStackScreenProps<RootStackParamList, 'Socail'>;
-const Socail = () =>{
+const Socail = ({navigation} : SocailProps) =>{
     return (
         <SafeAreaView>
             <View>
