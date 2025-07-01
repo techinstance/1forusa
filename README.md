@@ -113,3 +113,9 @@ To learn more about React Native, take a look at the following resources:
 - Improved Navigation flow for better user experience
 
 
+## Updates - 1st July 2025 - Aditya Vijayvargiya
+
+- Add image picker functionality to PostCreationModal
+- Integrated image picker for selecting images and videos from device storage
+- Improved PostCreationModal styling for better user experience
+

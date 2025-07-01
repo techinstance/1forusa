@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,10 +10,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   BackHandler,
+  Image,
+  FlatList,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
+import { launchImageLibrary, ImagePickerResponse, Asset } from 'react-native-image-picker';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -27,7 +30,7 @@ type RootStackParamList = {
 interface PostCreationModalProps {
   visible: boolean;
   onClose: () => void;
-  onPost: (text: string) => void;
+  onPost: (text: string, attachments: Asset[]) => void;
 }
 
 const PostCreationModal: React.FC<PostCreationModalProps> = ({
@@ -37,6 +40,7 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
 }) => {
   const slideAnim = useRef(new Animated.Value(screenWidth)).current;
   const [postText, setPostText] = React.useState('');
+  const [attachments, setAttachments] = React.useState<Asset[]>([]);
   const [shouldRender, setShouldRender] = React.useState(visible);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -47,6 +51,7 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
         if (visible) {
           // Navigate to Home screen instead of just closing modal
           setPostText('');
+          setAttachments([]);
           onClose();
           navigation.navigate('Home');
           return true; // Prevent default back action
@@ -89,10 +94,47 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
     }
   }, [visible, slideAnim, shouldRender]);
 
+  const handleChoosePhoto = () => {
+    if (attachments.length >= 4) {
+      // Optionally, show an alert to the user
+      return;
+    }
+    launchImageLibrary(
+      {
+        mediaType: 'mixed',
+        selectionLimit: 4 - attachments.length,
+        quality: 1,
+      },
+      (response: ImagePickerResponse) => {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.errorCode) {
+          console.log('ImagePicker Error: ', response.errorMessage);
+        } else if (response.assets) {
+          setAttachments([...attachments, ...response.assets]);
+        }
+      },
+    );
+  };
+
+  const removeAttachment = useCallback((uri: string) => {
+    setAttachments(prevAttachments => prevAttachments.filter((item) => item.uri !== uri));
+  }, []);
+
+  const renderAttachment = useCallback(({ item }: { item: Asset }) => (
+    <View style={styles.attachmentContainer}>
+      <Image source={{ uri: item.uri }} style={styles.attachmentPreview} />
+      <TouchableOpacity onPress={() => removeAttachment(item.uri!)} style={styles.removeAttachmentButton}>
+        <Text style={styles.removeAttachmentText}>✕</Text>
+      </TouchableOpacity>
+    </View>
+  ), [removeAttachment]);
+
   const handlePost = () => {
-    if (postText.trim()) {
-      onPost(postText.trim());
+    if (postText.trim() || attachments.length > 0) {
+      onPost(postText.trim(), attachments);
       setPostText('');
+      setAttachments([]);
       onClose();
       // Ensure we're on Home screen after posting
       navigation.navigate('Home');
@@ -101,6 +143,7 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
 
   const handleClose = () => {
     setPostText('');
+    setAttachments([]);
     onClose();
     // Navigate to Home screen when closing
     navigation.navigate('Home');
@@ -133,9 +176,9 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
                 onPress={handlePost}
                 style={[
                   styles.postButton,
-                  !postText.trim() && styles.disabledButton,
+                  !postText.trim() && attachments.length === 0 && styles.disabledButton,
                 ]}
-                disabled={!postText.trim()}
+                disabled={!postText.trim() && attachments.length === 0}
               >
                 <Text style={styles.postButtonText}>Post</Text>
               </TouchableOpacity>
@@ -153,9 +196,24 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
                 autoFocus
                 maxLength={280}
               />
+
+              {attachments.length > 0 && (
+                <FlatList
+                  data={attachments}
+                  renderItem={renderAttachment}
+                  keyExtractor={(item) => item.uri!}
+                  numColumns={2}
+                  columnWrapperStyle={styles.attachmentRow}
+                  contentContainerStyle={styles.attachmentsList}
+                  scrollEnabled={false}
+                />
+              )}
               
               {/* Character count */}
               <View style={styles.footer}>
+                <TouchableOpacity onPress={handleChoosePhoto} style={styles.attachmentButton}>
+                  <Text style={styles.attachmentButtonText}>Add Media</Text>
+                </TouchableOpacity>
                 <Text style={styles.characterCount}>
                   {postText.length}/280
                 </Text>
@@ -235,26 +293,72 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 16,
-    paddingTop: 16,
   },
   textInput: {
-    flex: 1,
+    flex: 2, // Give more space to text input
     fontSize: 18,
     color: '#14171A',
     textAlignVertical: 'top',
+    paddingTop: 16,
     paddingBottom: 16,
   },
   footer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
+    paddingHorizontal: 16,
     borderTopWidth: 1,
     borderTopColor: '#E1E8ED',
   },
   characterCount: {
     fontSize: 14,
     color: '#8E8E93',
+  },
+  attachmentButton: {
+    padding: 8,
+  },
+  attachmentButtonText: {
+    fontSize: 16,
+    color: '#1DA1F2',
+    fontWeight: '600',
+  },
+  attachmentsList: {
+    paddingVertical: 8,
+    marginTop: 16, // Pushes the image grid down
+  },
+  attachmentRow: {
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  attachmentContainer: {
+    width: (screenWidth - 32 - 8) / 2, // screen - (2 * h-padding) - gap
+    aspectRatio: 1,
+    position: 'relative',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  attachmentPreview: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
+    backgroundColor: '#F7F9FA',
+  },
+  removeAttachmentButton: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  removeAttachmentText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 });
 

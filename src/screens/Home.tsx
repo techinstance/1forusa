@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import FloatingActionButton from "../components/FloatingActionButton";
 import PostCreationModal from "../components/PostCreationModal";
 import React from "react";
+import { Asset } from "react-native-image-picker";
 
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>
@@ -20,9 +21,9 @@ const Home = ({navigation: _navigation} : HomeProps) =>{
         setIsModalVisible(false);
     };
 
-    const handlePost = (text: string) => {
+    const handlePost = (text: string, attachments: Asset[]) => {
         // TODO: Handle post submission here
-        console.log('Post created:', text);
+        console.log('Post created:', text, attachments);
         // You can add your post submission logic here
         setIsModalVisible(false);
     };
