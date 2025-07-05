@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const TextBoxComponent = () => {
   const [inputText, setInputText] = useState('');
@@ -29,10 +30,10 @@ const TextBoxComponent = () => {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.redButton} onPress={handleRedButton}>
-          <Text style={styles.buttonText}>Bad</Text>
+          <Icon name='thumbs-o-down' />
         </TouchableOpacity>
         <TouchableOpacity style={styles.greenButton} onPress={handleGreenButton}>
-          <Text style={styles.buttonText}>Good</Text>
+          <Icon name='thumbs-o-up' />
         </TouchableOpacity>
       </View>
 

@@ -1,61 +1,59 @@
-import React, { useRef } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Animated } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import type { RootStackParamList } from "../App"; // Adjust path as needed
+import React from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import type { NavigationProp } from '@react-navigation/native';
 
-type AnimatedValues = {
-  Home: Animated.Value;
-  Social: Animated.Value;
-  Activities: Animated.Value;
-  Profile: Animated.Value;
+export type RootStackParamList = {
+  Home: undefined;
+  Social: undefined;
+  Activites: undefined;
+  Profile: undefined;
 };
 
-const Footer = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+interface TabItem {
+  name: keyof RootStackParamList;
+  icon: string;
+  label: string;
+}
 
-  const animatedValues: AnimatedValues = {
-    Home: useRef(new Animated.Value(1)).current,
-    Social: useRef(new Animated.Value(1)).current,
-    Activities: useRef(new Animated.Value(1)).current,
-    Profile: useRef(new Animated.Value(1)).current,
+const Footer: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const route = useRoute();
+
+  const tabs: TabItem[] = [
+    { name: 'Home', icon: 'home', label: 'Home' },
+    { name: 'Social', icon: 'users', label: 'Social' },
+    { name: 'Activites', icon: 'calendar', label: 'Activities' },
+    { name: 'Profile', icon: 'user', label: 'Profile' },
+  ];
+
+  const handleTabPress = (screenName: keyof RootStackParamList) => {
+    navigation.navigate(screenName);
   };
-
-  const handlePressIn = (key: keyof AnimatedValues) => {
-    Animated.spring(animatedValues[key], {
-      toValue: 0.95,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handlePressOut = (key: keyof AnimatedValues) => {
-    Animated.spring(animatedValues[key], {
-      toValue: 1,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const renderTab = (label: keyof AnimatedValues, icon: string, screen: keyof RootStackParamList) => (
-    <TouchableOpacity
-      style={styles.subContainer}
-      onPressIn={() => handlePressIn(label)}
-      onPressOut={() => handlePressOut(label)}
-      onPress={() => navigation.navigate(screen)}
-    >
-      <Animated.View style={[styles.iconContainer, { transform: [{ scale: animatedValues[label] }] }]}>
-        <Icon name={icon} size={26} color="#ff8700" />
-      </Animated.View>
-      <Text style={styles.text}>{label}</Text>
-    </TouchableOpacity>
-  );
 
   return (
-    <View style={styles.container}>
-      {renderTab("Home", "home", "Home")}
-      {renderTab("Social", "users", "Socail")}
-      {renderTab("Activities", "tasks", "Activites")}
-      {renderTab("Profile", "user", "Profile")}
+    <View style={styles.footer}>
+      {tabs.map((tab) => {
+        const isActive = route.name === tab.name;
+        return (
+          <TouchableOpacity
+            key={tab.name}
+            style={styles.tabItem}
+            onPress={() => handleTabPress(tab.name)}
+            activeOpacity={0.7}
+          >
+            <View style={[styles.tabContent, isActive && styles.activeTab]}>
+              <Icon
+                name={tab.icon}
+                size={25}
+                color={isActive ? '#007AFF' : '#8E8E93'}
+                style={styles.tabIcon}
+              />
+            </View>
+          </TouchableOpacity>
+        );
+      })}
     </View>
   );
 };
@@ -63,40 +61,50 @@ const Footer = () => {
 export default Footer;
 
 const styles = StyleSheet.create({
-  container: {
-    height: 82,
-    width: "100%",
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    backgroundColor: "#ffffff",
+
+  footer: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
-    borderTopColor: "#e0e0e0",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: -3 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 8,
+    borderTopColor: '#E5E5EA',
+    paddingTop: 8,
+    paddingBottom: 12,
+    paddingHorizontal: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: -2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 10,
   },
-  subContainer: {
-    width: 64,
-    alignItems: "center",
-    justifyContent: "center",
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
   },
-  iconContainer: {
-    width: 50,
-    alignItems: "center",
-    backgroundColor: "#fff3e0",
-    borderRadius: 20,
-    padding: 10,
-    marginBottom: 6,
-    borderWidth: 1,
-    borderColor: "#ffcc80",
+  tabContent: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 12,
+    minHeight: 44,
   },
-  text: {
-    color: "#ff8700",
-    fontSize: 8,
-    fontWeight: "700",
-    letterSpacing: 0.5,
-    fontFamily: "System",
+  activeTab: {
+    backgroundColor: '#E3F2FD',
+  },
+  tabIcon: {
+    marginBottom: 4,
+  },
+  tabLabel: {
+    fontSize: 10,
+    fontWeight: '500',
+    color: '#8E8E93',
+    textAlign: 'center',
+  },
+  activeTabLabel: {
+    color: '#007AFF',
+    fontWeight: '600',
   },
 });
