@@ -126,11 +126,18 @@ const Home = ({navigation: _navigation} : HomeProps) =>{
         console.log('Comment on post:', postId);
     };
 
+    const handleSharePost = (post: Post) => {
+        // The share functionality is handled natively in PostComponent
+        // This callback can be used for analytics or other tracking
+        console.log('Post shared:', post.id, 'by', post.author.name);
+    };
+
     const postActions: PostActions = {
         onEdit: handleEditPost,
         onDelete: handleDeletePost,
         onLike: handleLikePost,
         onComment: handleCommentPost,
+        onShare: handleSharePost,
     };
 
     const renderPost = ({ item }: { item: Post }) => (

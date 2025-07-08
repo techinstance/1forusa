@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { Asset } from 'react-native-image-picker';
 import { Post, PostActions } from '../types/post';
+import { sharePost } from '../utils/sharing';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -56,6 +57,10 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, actions }) => {
   const handleCommentPress = useCallback(() => {
     actions.onComment(post.id);
   }, [actions, post.id]);
+
+  const handleSharePress = useCallback(async () => {
+    await sharePost(post, actions.onShare);
+  }, [post, actions.onShare]);
 
   const handleEditPress = useCallback(() => {
     actions.onEdit(post);
@@ -122,12 +127,22 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, actions }) => {
       {/* Footer */}
       <View style={styles.postFooter}>
         <TouchableOpacity onPress={handleLikePress} style={styles.footerButton}>
+          <Text style={[styles.footerIcon, post.isLiked && styles.likedIcon]}>
+            {post.isLiked ? '♥' : '♡'}
+          </Text>
           <Text style={[styles.footerButtonText, post.isLiked && styles.likedText]}>
-            {post.isLiked ? '❤️' : '🤍'} {post.likes}
+            {post.likes}
           </Text>
         </TouchableOpacity>
+        
         <TouchableOpacity onPress={handleCommentPress} style={styles.footerButton}>
-          <Text style={styles.footerButtonText}>💬 {post.comments}</Text>
+          <Text style={styles.footerIcon}>💬</Text>
+          <Text style={styles.footerButtonText}>{post.comments}</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity onPress={handleSharePress} style={styles.footerButton}>
+          <Text style={styles.footerIcon}>🔗</Text>
+          <Text style={styles.footerButtonText}>Share</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -238,15 +253,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderTopWidth: 1,
     borderTopColor: '#E1E8ED',
-    paddingTop: 8,
+    paddingTop: 12,
+    paddingBottom: 4,
   },
   footerButton: {
     flex: 1,
     alignItems: 'center',
     paddingVertical: 8,
+    flexDirection: 'column',
+  },
+  footerIcon: {
+    fontSize: 18,
+    marginBottom: 4,
+    color: '#8E8E93',
+  },
+  likedIcon: {
+    color: '#E0245E',
   },
   footerButtonText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#8E8E93',
     fontWeight: '500',
   },

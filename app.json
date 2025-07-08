@@ -1,4 +1,9 @@
 {
   "name": "forusa",
-  "displayName": "forusa"
+  "displayName": "ForUSA",
+  "scheme": "forusa",
+  "deepLinking": {
+    "enabled": true,
+    "prefixes": ["forusa://", "https://forusa.app"]
+  }
 }

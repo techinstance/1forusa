@@ -20,4 +20,5 @@ export interface PostActions {
   onDelete: (postId: string) => void;
   onLike: (postId: string) => void;
   onComment: (postId: string) => void;
+  onShare: (post: Post) => void;
 }
