@@ -1,0 +1,9 @@
+# Ignore backend directory completely
+backend/
+
+# Standard React Native ignores
+node_modules/
+android/
+ios/
+*.log
+.DS_Store
