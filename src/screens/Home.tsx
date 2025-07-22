@@ -1,13 +1,13 @@
-import { View, StyleSheet, PanResponder, Text, FlatList } from "react-native";
+import { View, Text, StyleSheet, PanResponder } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../App";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Footer from "../components/Footer";
 import GlobalQuesitions from "../components/GlobalQuestions";
-import SliderComponent from "../components/elements/SliderComponent";
-import Scroll from "../components/elements/Scroll";
-import TextBoxComponent from "../components/elements/TextBoxComponent";
-import TileGrid from "../components/elements/TileGrid";
+import SliderComponent from "../Pages/SliderScreeen";
+import Scroll from "../components/Deshboard/Scroll";
+import TextBoxComponent from "../components/Deshboard/TextBoxComponent";
+import TileGrid from "../components/Deshboard/TileGrid";
 import { useState, useRef } from "react";
 import React from "react";
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
