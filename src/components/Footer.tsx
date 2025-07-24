@@ -6,7 +6,7 @@ import type { NavigationProp } from '@react-navigation/native';
 
 export type RootStackParamList = {
   Home: undefined;
-  Social: undefined;
+  Socail: undefined;
   Activites: undefined;
   Profile: undefined;
 };
@@ -23,7 +23,7 @@ const Footer: React.FC = () => {
 
   const tabs: TabItem[] = [
     { name: 'Home', icon: 'home', label: 'Home' },
-    { name: 'Social', icon: 'users', label: 'Social' },
+    { name: 'Socail', icon: 'users', label: 'Social' },
     { name: 'Activites', icon: 'calendar', label: 'Activities' },
     { name: 'Profile', icon: 'user', label: 'Profile' },
   ];
