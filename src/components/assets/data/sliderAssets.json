@@ -1,0 +1,50 @@
+{
+  "totalAssets": 5,
+  "assets": [
+    {
+      "id": "a1",
+      "title": "Poverty",
+      "description": "Living paycheck to paycheck? You’re not alone. Start your journey here.",
+      "assetType": "image",
+      "assetUrl": "https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif",
+      "joyText": "You can change your story!",
+      "feedbackType": "swipe"
+    },
+    {
+      "id": "a2",
+      "title": "Write Your Goals",
+      "description": "Writing your goals increases your success chances by 42%. Try now.",
+      "assetType": "image",
+      "assetUrl": "https://media.giphy.com/media/l0MYB8Ory7Hqefo9a/giphy.gif",
+      "joyText": "One small step today!",
+      "feedbackType": "form"
+    },
+    {
+      "id": "a3",
+      "title": "Take Action",
+      "description": "Even small actions toward your goal build massive momentum.",
+      "assetType": "lottie",
+      "assetUrl": "https://assets10.lottiefiles.com/packages/lf20_w51pcehl.json",
+      "joyText": "Tiny steps → Big impact!",
+      "feedbackType": "button"
+    },
+    {
+      "id": "a4",
+      "title": "Save & Invest",
+      "description": "Saving $5/day can turn into $50,000 in 10 years. Start now!",
+      "assetType": "image",
+      "assetUrl": "https://media.giphy.com/media/l0Exk8EUzSLsrErEQ/giphy.gif",
+      "joyText": "Make money your ally.",
+      "feedbackType": "swipe"
+    },
+    {
+      "id": "a5",
+      "title": "Financial Freedom",
+      "description": "True freedom isn’t fancy stuff — it’s control over your time.",
+      "assetType": "image",
+      "assetUrl": " https://app.lottiefiles.com/animation/263991c7-3eb8-41c3-b703-9e9b91eab1d0",
+      "joyText": "Live life on your terms.",
+      "feedbackType": "button"
+    }
+  ]
+}

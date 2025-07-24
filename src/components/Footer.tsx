@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import type { NavigationProp } from '@react-navigation/native';
 
@@ -29,13 +29,16 @@ const Footer: React.FC = () => {
   ];
 
   const handleTabPress = (screenName: keyof RootStackParamList) => {
-    navigation.navigate(screenName);
+    if (route.name !== screenName) {
+      navigation.navigate(screenName);
+    }
   };
 
   return (
     <View style={styles.footer}>
       {tabs.map((tab) => {
         const isActive = route.name === tab.name;
+
         return (
           <TouchableOpacity
             key={tab.name}
@@ -46,10 +49,12 @@ const Footer: React.FC = () => {
             <View style={[styles.tabContent, isActive && styles.activeTab]}>
               <Icon
                 name={tab.icon}
-                size={25}
+                size={22}
                 color={isActive ? '#007AFF' : '#8E8E93'}
-                style={styles.tabIcon}
               />
+              <Text style={[styles.tabLabel, isActive && styles.activeTabLabel]}>
+                {tab.label}
+              </Text>
             </View>
           </TouchableOpacity>
         );
@@ -61,7 +66,6 @@ const Footer: React.FC = () => {
 export default Footer;
 
 const styles = StyleSheet.create({
-
   footer: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
@@ -94,14 +98,12 @@ const styles = StyleSheet.create({
   activeTab: {
     backgroundColor: '#E3F2FD',
   },
-  tabIcon: {
-    marginBottom: 4,
-  },
   tabLabel: {
     fontSize: 10,
     fontWeight: '500',
     color: '#8E8E93',
     textAlign: 'center',
+    marginTop: 2,
   },
   activeTabLabel: {
     color: '#007AFF',

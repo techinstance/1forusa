@@ -10,15 +10,17 @@ import Splash from './screens/SplashScreen';
 import Login from './screens/Auth/Login';
 import SignUp from './screens/Auth/SignUp';
 
+
 export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   SignUp: undefined;
   Home: undefined;
-  Socail: undefined;
-  Activites: undefined;
+  Social: undefined;
+  Activities: undefined;
   Profile: undefined;
 };
+
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -34,10 +36,11 @@ const App = () => {
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="Socail" component={Socail} />
+        <Stack.Screen name="Social" component={Social} />
         <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Activites" component={Activites} />
+        <Stack.Screen name="Activities" component={Activities} />
         <Stack.Screen name="Profile" component={Profile} />
+     
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -1,53 +1,64 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, SafeAreaView, StyleSheet } from 'react-native';
+import { Alert, SafeAreaView, View, Text, StyleSheet } from 'react-native';
 import Button from '../common/Button';
+import PasswordInput from '../common/PasswordInput'; // Assumed you have this already
 import { GlobalStyles } from '../common/GlobalStyle';
 
 const ResetPassword = () => {
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleChange = (text, index) => {
-    const newOtp = [...otp];
-    newOtp[index] = text;
-    setOtp(newOtp);
+  const handleReset = () => {
+    if (newPassword !== confirmPassword) {
+      Alert.alert('Passwords do not match!');
+      return;
+    }
+
+    // Proceed with password reset logic
+    console.log('Password reset to:', newPassword);
   };
 
   return (
     <SafeAreaView style={GlobalStyles.container}>
-      <Text style={{ marginBottom: 10 }}>Enter new password</Text>
-      <View style={styles.otpRow}>
-        {otp.map((val, idx) => (
-          <TextInput
-            key={idx}
-            style={styles.otpInput}
-            value={val}
-            onChangeText={(text) => handleChange(text, idx)}
-            keyboardType="numeric"
-            maxLength={1}
-          />
-        ))}
+      <View style={styles.card}>
+        <Text style={GlobalStyles.title}>Reset Password</Text>
+        <Text style={styles.subtitle}>Enter your new password below</Text>
+
+        <PasswordInput
+          placeholder="New Password"
+          value={newPassword}
+          onChangeText={setNewPassword}
+        />
+
+        <PasswordInput
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+
+        <Button title="Reset Your Password" onPress={handleReset} />
       </View>
-      <Button title="Reset your password" onPress={() => {}} />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  otpRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  otpInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 12,
+  card: {
+    width: '100%',
     backgroundColor: '#fff',
-    textAlign: 'center',
-    fontSize: 18,
-    flex: 1,
-    marginHorizontal: 3,
+    padding: 24,
+    borderRadius: 20,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 5,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#555',
+    marginBottom: 20,
+    marginTop: 8,
   },
 });
 

@@ -11,6 +11,7 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ onPress }) 
       style={styles.container}
       onPress={onPress}
       activeOpacity={0.8}
+      accessibilityLabel="Create new post"
     >
       <View style={styles.iconContainer}>
         <View style={styles.plusHorizontal} />
@@ -23,12 +24,12 @@ const FloatingActionButton: React.FC<FloatingActionButtonProps> = ({ onPress }) 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 110, // Position higher above the footer with more spacing
+    bottom: 110, // Enough space above footer
     right: 20,
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#1DA1F2', // Twitter blue color
+    backgroundColor: '#1DA1F2', // Twitter blue
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 8, // Android shadow
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.3,
     shadowRadius: 4.65,
-    zIndex: 1000, // High z-index to stay on top
+    zIndex: 1000, // ensure on top
   },
   iconContainer: {
     width: 24,

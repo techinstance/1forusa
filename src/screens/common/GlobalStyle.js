@@ -3,31 +3,55 @@ import { StyleSheet } from 'react-native';
 export const GlobalStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    padding: 20,
+    backgroundColor: '#FFE0C9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 6,
-    padding: 12,
-    backgroundColor: '#fff',
-    marginBottom: 15,
+
+  card: {
+    backgroundColor: '#FFFFFF',
+    width: '100%',
+    borderRadius: 20,
+    padding: 25,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 6,
   },
+
   title: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
+    color: '#FF6B00',
   },
+
   link: {
     color: '#FF6B00',
     fontWeight: 'bold',
+    fontSize: 14,
   },
-  row : {
 
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
   },
-  center : {
-    
-  }
+
+  center: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+
+  googleButton: {
+    backgroundColor: '#FF6B00',
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
+  },
 });

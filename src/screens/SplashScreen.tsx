@@ -1,16 +1,19 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, ActivityIndicator, StatusBar } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View, Text, StyleSheet, ActivityIndicator, StatusBar, Button } from 'react-native';
 import { RootStackParamList } from "../App";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import LottieAsset from '../screens/LottieView';
 
 type SplashProps = NativeStackScreenProps<RootStackParamList , "Splash">
 const Splash = ({ navigation } : SplashProps) => {
+  const [timer, setTimer] = useState(60);
+
   // Optional: Navigate to home after 2.5 seconds
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const timeout = setTimeout(() => {
       navigation.replace("Login");
     }, 2500);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timeout);
   }, []);
 
   return (
@@ -18,6 +21,8 @@ const Splash = ({ navigation } : SplashProps) => {
       <StatusBar backgroundColor="#1a1a2e" barStyle="light-content" />
       <Text style={styles.logoText}>1forusa</Text>
       <ActivityIndicator size="large" color="#ffffff" style={{ marginTop: 20 }} />
+      {/* <Text>{`Redirecting in ${timer} seconds...`}</Text> */}
+      
     </View>
   );
 };
