@@ -1,24 +1,18 @@
-import React from "react";
-import {
-  SafeAreaView,
-  Text,
-  View,
-  StyleSheet,
-  FlatList,
-} from "react-native";
-import { RootStackParamList } from "../App";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import FloatingActionButton from "../components/FloatingActionButton";
-import Footer from "../components/Footer";
-import PostComponent from "../SocialPost/PostComponent";
-import PostCreationModal from "../SocialPost/PostCreationModal";
-import PostEditModal from "../SocialPost/PostEditModal";
-import type { Asset } from "react-native-image-picker"; 
-import type { Post, PostActions } from "../types/post";
+import React from 'react';
+import { SafeAreaView, Text, View, StyleSheet, FlatList } from 'react-native';
+import { RootStackParamList } from '../App';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import FloatingActionButton from '../components/FloatingActionButton';
+import Footer from '../components/Footer';
+import PostComponent from '../SocialPost/PostComponent';
+import PostCreationModal from '../SocialPost/PostCreationModal';
+import PostEditModal from '../SocialPost/PostEditModal';
+import type { Asset } from 'react-native-image-picker';
+import type { Post, PostActions } from '../types/post';
 
-type SocailProps = NativeStackScreenProps<RootStackParamList, 'Socail'>;
+type SocialProps = NativeStackScreenProps<RootStackParamList, 'Social'>;
 
-const Socail = ({ navigation }: SocailProps) => {
+const Social = ({ navigation }: SocialProps) => {
   const [isModalVisible, setIsModalVisible] = React.useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = React.useState(false);
   const [editingPost, setEditingPost] = React.useState<Post | null>(null);
@@ -26,7 +20,7 @@ const Socail = ({ navigation }: SocailProps) => {
   const [posts, setPosts] = React.useState<Post[]>([
     {
       id: '1',
-      text: 'Welcome to our social platform! 🎉 Share your thoughts, connect with friends, and explore amazing content. What\'s on your mind today?',
+      text: "Welcome to our social platform! 🎉 Share your thoughts, connect with friends, and explore amazing content. What's on your mind today?",
       attachments: [],
       createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
       author: {
@@ -97,11 +91,17 @@ const Socail = ({ navigation }: SocailProps) => {
     setIsEditModalVisible(true);
   };
 
-  const handleSaveEdit = (postId: string, text: string, attachments: Asset[]) => {
+  const handleSaveEdit = (
+    postId: string,
+    text: string,
+    attachments: Asset[],
+  ) => {
     setPosts(prev =>
       prev.map(p =>
-        p.id === postId ? { ...p, text, attachments, updatedAt: new Date() } : p
-      )
+        p.id === postId
+          ? { ...p, text, attachments, updatedAt: new Date() }
+          : p,
+      ),
     );
     setIsEditModalVisible(false);
     setEditingPost(null);
@@ -115,9 +115,13 @@ const Socail = ({ navigation }: SocailProps) => {
     setPosts(prev =>
       prev.map(p =>
         p.id === postId
-          ? { ...p, isLiked: !p.isLiked, likes: p.isLiked ? p.likes - 1 : p.likes + 1 }
-          : p
-      )
+          ? {
+              ...p,
+              isLiked: !p.isLiked,
+              likes: p.isLiked ? p.likes - 1 : p.likes + 1,
+            }
+          : p,
+      ),
     );
   };
 
@@ -139,7 +143,9 @@ const Socail = ({ navigation }: SocailProps) => {
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Text style={styles.emptyStateText}>No posts yet</Text>
-      <Text style={styles.emptyStateSubtext}>Tap the + button to create your first post!</Text>
+      <Text style={styles.emptyStateSubtext}>
+        Tap the + button to create your first post!
+      </Text>
     </View>
   );
 
@@ -149,9 +155,11 @@ const Socail = ({ navigation }: SocailProps) => {
         <FlatList
           data={posts}
           renderItem={renderPost}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           style={styles.postsList}
-          contentContainerStyle={posts.length === 0 ? styles.emptyContainer : undefined}
+          contentContainerStyle={
+            posts.length === 0 ? styles.emptyContainer : undefined
+          }
           ListEmptyComponent={renderEmptyState}
           showsVerticalScrollIndicator={false}
         />
@@ -180,12 +188,12 @@ const Socail = ({ navigation }: SocailProps) => {
   );
 };
 
-export default Socail;
+export default Social;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   listContainer: {
     flex: 1, // This makes FlatList take all space above Footer
@@ -196,20 +204,20 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   emptyState: {
-    alignItems: "center",
+    alignItems: 'center',
     padding: 20,
   },
   emptyStateText: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 10,
   },
   emptyStateSubtext: {
     fontSize: 14,
-    color: "#666",
+    color: '#666',
   },
 });

@@ -6,8 +6,8 @@ import type { NavigationProp } from '@react-navigation/native';
 
 export type RootStackParamList = {
   Home: undefined;
-  Socail: undefined;
-  Activites: undefined;
+  Social: undefined;
+  Activities: undefined;
   Profile: undefined;
 };
 
@@ -23,8 +23,8 @@ const Footer: React.FC = () => {
 
   const tabs: TabItem[] = [
     { name: 'Home', icon: 'home', label: 'Home' },
-    { name: 'Socail', icon: 'users', label: 'Social' },
-    { name: 'Activites', icon: 'calendar', label: 'Activities' },
+    { name: 'Social', icon: 'users', label: 'Social' },
+    { name: 'Activities', icon: 'calendar', label: 'Activities' },
     { name: 'Profile', icon: 'user', label: 'Profile' },
   ];
 
@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
 
   return (
     <View style={styles.footer}>
-      {tabs.map((tab) => {
+      {tabs.map(tab => {
         const isActive = route.name === tab.name;
 
         return (
@@ -52,7 +52,9 @@ const Footer: React.FC = () => {
                 size={22}
                 color={isActive ? '#007AFF' : '#8E8E93'}
               />
-              <Text style={[styles.tabLabel, isActive && styles.activeTabLabel]}>
+              <Text
+                style={[styles.tabLabel, isActive && styles.activeTabLabel]}
+              >
                 {tab.label}
               </Text>
             </View>

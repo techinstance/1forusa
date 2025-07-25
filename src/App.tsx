@@ -3,13 +3,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Home from './screens/Home';
-import Activites from './screens/Activites';
-import Profile from './screens/Profile';
-import Socail from './screens/Socail';
+import ActivitiesScreen from './Pages/Activities';
+import Profile from './Pages/Profile';
+import Social from './Pages/Social';
 import Splash from './screens/SplashScreen';
 import Login from './screens/Auth/Login';
 import SignUp from './screens/Auth/SignUp';
-
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -20,7 +19,6 @@ export type RootStackParamList = {
   Activities: undefined;
   Profile: undefined;
 };
-
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -38,9 +36,8 @@ const App = () => {
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Social" component={Social} />
         <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Activities" component={Activities} />
+        <Stack.Screen name="Activities" component={ActivitiesScreen} />
         <Stack.Screen name="Profile" component={Profile} />
-     
       </Stack.Navigator>
     </NavigationContainer>
   );
