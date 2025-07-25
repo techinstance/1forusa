@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -9,6 +10,20 @@ import Socail from './screens/Socail';
 import Splash from './screens/SplashScreen';
 import Login from './screens/Auth/Login';
 import SignUp from './screens/Auth/SignUp';
+=======
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import React from 'react';
+
+import Home from "./screens/Home";
+import Activities from "./Pages/Activities";
+import Profile from "./Pages/Profile";
+import Social from "./Pages/Social"
+import Splash from "./screens/SplashScreen";
+import Login from "./screens/Auth/Login";
+import SignUp from "./screens/Auth/SignUp";
+import TileGridScreen from './components/TileGridScreen';
+>>>>>>> 0bc8d40 (Initial commit to Siddhant branch)
 
 
 export type RootStackParamList = {
@@ -40,7 +55,7 @@ const App = () => {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Activities" component={Activities} />
         <Stack.Screen name="Profile" component={Profile} />
-     
+        <TileGridScreen />;
       </Stack.Navigator>
     </NavigationContainer>
   );

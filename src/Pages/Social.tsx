@@ -16,9 +16,9 @@ import PostEditModal from "../SocialPost/PostEditModal";
 import type { Asset } from "react-native-image-picker"; 
 import type { Post, PostActions } from "../types/post";
 
-type SocailProps = NativeStackScreenProps<RootStackParamList, 'Socail'>;
+type SocialProps = NativeStackScreenProps<RootStackParamList, 'Social'>;
 
-const Socail = ({ navigation }: SocailProps) => {
+const Social = ({ navigation: _navigation }: SocialProps) =>{
   const [isModalVisible, setIsModalVisible] = React.useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = React.useState(false);
   const [editingPost, setEditingPost] = React.useState<Post | null>(null);
@@ -180,7 +180,7 @@ const Socail = ({ navigation }: SocailProps) => {
   );
 };
 
-export default Socail;
+export default Social;
 
 const styles = StyleSheet.create({
   container: {
