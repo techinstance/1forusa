@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Home from './screens/Home';
-import ActivitiesScreen from './Pages/Activities';
+import Activities from './Pages/Activities';
 import Profile from './Pages/Profile';
 import Social from './Pages/Social';
 import Splash from './screens/SplashScreen';
@@ -36,7 +36,7 @@ const App = () => {
         <Stack.Screen name="SignUp" component={SignUp} />
         <Stack.Screen name="Social" component={Social} />
         <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Activities" component={ActivitiesScreen} />
+        <Stack.Screen name="Activities" component={Activities} />
         <Stack.Screen name="Profile" component={Profile} />
       </Stack.Navigator>
     </NavigationContainer>
