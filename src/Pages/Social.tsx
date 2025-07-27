@@ -9,55 +9,59 @@ import PostCreationModal from '../SocialPost/PostCreationModal';
 import PostEditModal from '../SocialPost/PostEditModal';
 import type { Asset } from 'react-native-image-picker';
 import type { Post, PostActions } from '../types/post';
-
+import { fetchSocialPosts } from '../Services/socialServices';
+import { useEffect, useState } from 'react';
 type SocialProps = NativeStackScreenProps<RootStackParamList, 'Social'>;
 
-const Social = ({ navigation }: SocialProps) => {
-  const [isModalVisible, setIsModalVisible] = React.useState(false);
-  const [isEditModalVisible, setIsEditModalVisible] = React.useState(false);
-  const [editingPost, setEditingPost] = React.useState<Post | null>(null);
+const Social = ({}: SocialProps) => {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [editingPost, setEditingPost] = useState<Post | null>(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState<string | null>(null);
 
-  const [posts, setPosts] = React.useState<Post[]>([
-    {
-      id: '1',
-      text: "Welcome to our social platform! 🎉 Share your thoughts, connect with friends, and explore amazing content. What's on your mind today?",
-      attachments: [],
-      createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  // Transform API response to match Post interface
+  const transformApiPostToPost = (apiPost: any): Post => {
+    return {
+      id: apiPost._id,
+      text: apiPost.text,
+      attachments: [], // API doesn't seem to have attachments in the expected format
+      createdAt: new Date(apiPost.createdAt),
       author: {
-        name: 'Community Team',
+        name: apiPost.user?.name || 'Anonymous',
         avatar: undefined,
       },
-      likes: 24,
-      comments: 8,
-      isLiked: false,
-    },
-    {
-      id: '2',
-      text: 'Just finished building this amazing React Native app! The development experience has been incredible. 💻✨',
-      attachments: [],
-      createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000),
-      author: {
-        name: 'React Developer',
-        avatar: undefined,
-      },
-      likes: 42,
-      comments: 12,
-      isLiked: true,
-    },
-    {
-      id: '3',
-      text: 'Beautiful sunset today! 🌅 Nature never fails to amaze me.',
-      attachments: [],
-      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
-      author: {
-        name: 'Nature Lover',
-        avatar: undefined,
-      },
-      likes: 18,
-      comments: 3,
-      isLiked: false,
-    },
-  ]);
+      likes: apiPost.likes?.length || 0,
+      comments: apiPost.comments?.length || 0,
+      isLiked: false, // We'd need user info to determine this
+    };
+  };
+
+  useEffect(() => {
+    const loadPosts = async () => {
+      try {
+        // setLoading(true);
+        // setError(null);
+        const data = await fetchSocialPosts();
+        console.log('Raw API data:', data);
+
+        // Transform the API data to match our Post interface
+        const transformedPosts = data.map(transformApiPostToPost);
+        console.log('Transformed posts:', transformedPosts);
+
+        setPosts(transformedPosts);
+      } catch (err) {
+        console.error('Error fetching posts:', err);
+        // setError('Failed to load posts. Please try again.');
+      } finally {
+        // setLoading(false);
+      }
+    };
+
+    loadPosts();
+  }, []);
 
   const handleCreatePost = () => {
     setIsModalVisible(true);

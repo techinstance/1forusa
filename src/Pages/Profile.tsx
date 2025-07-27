@@ -67,8 +67,8 @@ const ProfileScreen = () => {
         importance: AndroidImportance.HIGH,
       });
 
-     const res = await fetch('http://10.0.2.2:5050/api/messages')
-    const allowedMessages = await res.json();
+      const res = await fetch('http://10.0.2.2:5050/api/messages');
+      const allowedMessages = await res.json();
 
       if (allowedMessages.length === 0) return;
 
