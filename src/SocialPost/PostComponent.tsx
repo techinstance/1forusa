@@ -22,8 +22,10 @@ interface PostComponentProps {
 const PostComponent: React.FC<PostComponentProps> = ({ post, actions }) => {
   const formatDate = (date: Date) => {
     const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
+    const diffInHours = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60),
+    );
+
     if (diffInHours < 1) {
       return 'Just now';
     } else if (diffInHours < 24) {
@@ -35,18 +37,14 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, actions }) => {
   };
 
   const handleDeletePress = useCallback(() => {
-    Alert.alert(
-      'Delete Post',
-      'Are you sure you want to delete this post?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => actions.onDelete(post.id),
-        },
-      ]
-    );
+    Alert.alert('Delete Post', 'Are you sure you want to delete this post?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: () => actions.onDelete(post.id),
+      },
+    ]);
   }, [actions, post.id]);
 
   const handleLikePress = useCallback(() => {
@@ -61,11 +59,35 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, actions }) => {
     actions.onEdit(post);
   }, [actions, post]);
 
-  const renderAttachment = useCallback(({ item }: { item: Asset }) => (
-    <View style={styles.attachmentContainer}>
-      <Image source={{ uri: item.uri }} style={styles.attachmentImage} />
-    </View>
-  ), []);
+  const renderAttachment = useCallback(
+    ({ item }: { item: Asset }) => {
+      const isOnlyImage = post.attachments.length === 1;
+      const containerStyle = isOnlyImage
+        ? styles.singleAttachmentContainer
+        : styles.attachmentContainer;
+
+      return (
+        <View style={containerStyle}>
+          <Image
+            source={{ uri: item.uri }}
+            style={styles.attachmentImage}
+            resizeMode={isOnlyImage ? 'cover' : 'cover'}
+            onError={error => {
+              console.log(
+                'Image failed to load:',
+                item.uri,
+                error.nativeEvent.error,
+              );
+            }}
+            onLoad={() => {
+              console.log('Image loaded successfully:', item.uri);
+            }}
+          />
+        </View>
+      );
+    },
+    [post.attachments.length],
+  );
 
   return (
     <View style={styles.postContainer}>
@@ -92,28 +114,36 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, actions }) => {
           </View>
         </View>
         <View style={styles.postActions}>
-          <TouchableOpacity onPress={handleEditPress} style={styles.actionButton}>
+          <TouchableOpacity
+            onPress={handleEditPress}
+            style={styles.actionButton}
+          >
             <Text style={styles.actionButtonText}>Edit</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleDeletePress} style={styles.actionButton}>
-            <Text style={[styles.actionButtonText, styles.deleteText]}>Delete</Text>
+          <TouchableOpacity
+            onPress={handleDeletePress}
+            style={styles.actionButton}
+          >
+            <Text style={[styles.actionButtonText, styles.deleteText]}>
+              Delete
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {/* Content */}
-      {post.text ? (
-        <Text style={styles.postText}>{post.text}</Text>
-      ) : null}
+      {post.text ? <Text style={styles.postText}>{post.text}</Text> : null}
 
       {/* Attachments */}
       {post.attachments.length > 0 && (
         <FlatList
           data={post.attachments}
           renderItem={renderAttachment}
-          keyExtractor={(item) => item.uri!}
+          keyExtractor={item => item.uri!}
           numColumns={post.attachments.length === 1 ? 1 : 2}
-          columnWrapperStyle={post.attachments.length > 1 ? styles.attachmentRow : undefined}
+          columnWrapperStyle={
+            post.attachments.length > 1 ? styles.attachmentRow : undefined
+          }
           contentContainerStyle={styles.attachmentsList}
           scrollEnabled={false}
         />
@@ -122,11 +152,16 @@ const PostComponent: React.FC<PostComponentProps> = ({ post, actions }) => {
       {/* Footer */}
       <View style={styles.postFooter}>
         <TouchableOpacity onPress={handleLikePress} style={styles.footerButton}>
-          <Text style={[styles.footerButtonText, post.isLiked && styles.likedText]}>
+          <Text
+            style={[styles.footerButtonText, post.isLiked && styles.likedText]}
+          >
             {post.isLiked ? '❤️' : '🤍'} {post.likes}
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleCommentPress} style={styles.footerButton}>
+        <TouchableOpacity
+          onPress={handleCommentPress}
+          style={styles.footerButton}
+        >
           <Text style={styles.footerButtonText}>💬 {post.comments}</Text>
         </TouchableOpacity>
       </View>
@@ -223,6 +258,13 @@ const styles = StyleSheet.create({
   attachmentContainer: {
     width: (screenWidth - 32 - 8) / 2,
     aspectRatio: 1,
+    marginBottom: 8,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  singleAttachmentContainer: {
+    width: screenWidth - 32,
+    height: 200,
     marginBottom: 8,
     borderRadius: 8,
     overflow: 'hidden',

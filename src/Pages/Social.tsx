@@ -24,14 +24,44 @@ const Social = ({}: SocialProps) => {
 
   // Transform API response to match Post interface
   const transformApiPostToPost = (apiPost: any): Post => {
+    // Transform images from API to attachments format
+    const attachments = [];
+    if (apiPost.image) {
+      // Single image
+      attachments.push({
+        uri: apiPost.image,
+        type: 'image/jpeg',
+        fileName: 'post_image.jpg',
+      });
+    } else if (apiPost.images && Array.isArray(apiPost.images)) {
+      // Multiple images
+      apiPost.images.forEach((imageUrl: string, index: number) => {
+        attachments.push({
+          uri: imageUrl,
+          type: 'image/jpeg',
+          fileName: `post_image_${index}.jpg`,
+        });
+      });
+    } else if (apiPost.attachments && Array.isArray(apiPost.attachments)) {
+      // If API already has attachments in some format
+      apiPost.attachments.forEach((attachment: any, index: number) => {
+        attachments.push({
+          uri: attachment.url || attachment.uri || attachment,
+          type: attachment.type || 'image/jpeg',
+          fileName: attachment.fileName || `attachment_${index}.jpg`,
+        });
+      });
+    }
+
     return {
       id: apiPost._id,
       text: apiPost.text,
-      attachments: [], // API doesn't seem to have attachments in the expected format
+      attachments: attachments,
       createdAt: new Date(apiPost.createdAt),
       author: {
         name: apiPost.user?.name || 'Anonymous',
-        avatar: undefined,
+        avatar:
+          apiPost.user?.avatar || apiPost.user?.profilePicture || undefined,
       },
       likes: apiPost.likes?.length || 0,
       comments: apiPost.comments?.length || 0,
@@ -50,6 +80,16 @@ const Social = ({}: SocialProps) => {
         // Transform the API data to match our Post interface
         const transformedPosts = data.map(transformApiPostToPost);
         console.log('Transformed posts:', transformedPosts);
+
+        // Log image information for debugging
+        transformedPosts.forEach((post: Post, index: number) => {
+          if (post.attachments.length > 0) {
+            console.log(
+              `Post ${index} has ${post.attachments.length} images:`,
+              post.attachments,
+            );
+          }
+        });
 
         setPosts(transformedPosts);
       } catch (err) {

@@ -9,7 +9,7 @@ import {
 } from 'react-native-paper';
 import notifee, {
   AndroidImportance,
-  TimestampTrigger,
+ 
   TriggerType,
 } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';

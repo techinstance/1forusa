@@ -9,6 +9,7 @@ import Social from './Pages/Social';
 import Splash from './screens/SplashScreen';
 import Login from './screens/Auth/Login';
 import SignUp from './screens/Auth/SignUp';
+import TileGrid from './screens/TileGrid';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -18,6 +19,7 @@ export type RootStackParamList = {
   Social: undefined;
   Activities: undefined;
   Profile: undefined;
+  TileGrid: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -38,6 +40,7 @@ const App = () => {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Activities" component={Activities} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="TileGrid" component={TileGrid} />
       </Stack.Navigator>
     </NavigationContainer>
   );
