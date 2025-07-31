@@ -3,7 +3,6 @@ import { SafeAreaView, Text, View, StyleSheet, FlatList } from 'react-native';
 import { RootStackParamList } from '../App';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import FloatingActionButton from '../components/FloatingActionButton';
-import Footer from '../components/Footer';
 import PostComponent from '../SocialPost/PostComponent';
 import PostCreationModal from '../SocialPost/PostCreationModal';
 import PostEditModal from '../SocialPost/PostEditModal';
@@ -208,8 +207,6 @@ const Social = ({}: SocialProps) => {
           showsVerticalScrollIndicator={false}
         />
       </View>
-
-      <Footer />
 
       <FloatingActionButton onPress={handleCreatePost} />
 

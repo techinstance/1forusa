@@ -7,11 +7,11 @@ import {
   TouchableOpacity,
   TextInput,
   Animated,
-  Dimensions,
+  // Dimensions,
   SafeAreaView,
 } from 'react-native';
 
-const { width: screenWidth } = Dimensions.get('window');
+// const { width: screenWidth } = Dimensions.get('window');
 
 interface Tile {
   id: string;

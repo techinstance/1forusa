@@ -1,7 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {  useRef, useState } from 'react';
 import {
-  View, Text, FlatList, SafeAreaView, StyleSheet,
-  Image, TouchableOpacity, Dimensions, ScrollView
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Dimensions,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 
@@ -17,7 +22,7 @@ type AssetType = {
   assetType: string;
   assetUrl: string;
   joyText?: string;
-  feedbackType?: 'button' | 'swipe' | 'form';
+  feedbackType?: string;
 };
 
 const SliderScreen = () => {
@@ -81,17 +86,17 @@ const SliderScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       {/* FlatList - Main Slider */}
       <FlatList
         data={assets}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         horizontal
         pagingEnabled
         renderItem={renderItem}
         ref={flatListRef}
         showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={(e) => {
+        onMomentumScrollEnd={e => {
           const index = Math.round(e.nativeEvent.contentOffset.x / width);
           setCurrentIndex(index);
         }}
@@ -102,14 +107,11 @@ const SliderScreen = () => {
         {assets.map((_, index) => (
           <View
             key={index}
-            style={[
-              styles.dot,
-              currentIndex === index && styles.activeDot
-            ]}
+            style={[styles.dot, currentIndex === index && styles.activeDot]}
           />
         ))}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -118,7 +120,7 @@ export default SliderScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fffef8',
+    backgroundColor: 'transparent',
   },
   slide: {
     width,
@@ -189,5 +191,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF6B00',
     width: 12,
     height: 12,
-  }
+  },
 });

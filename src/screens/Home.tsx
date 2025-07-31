@@ -6,12 +6,9 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 
-import Footer from '../components/Footer';
-import GlobalQuesitions from '../components/GlobalQuestions';
 import SliderComponent from '../components/elements/SliderComponent';
 import Scroll from '../components/elements/Scroll';
 import TextBoxComponent from '../components/elements/TextBoxComponent';
@@ -43,12 +40,10 @@ const Home = ({ navigation }: HomeProps) => {
   const CurrentComponent = components[currentIndex];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <GlobalQuesitions />
+    <View style={styles.container}>
       <View style={styles.mainscreen} {...panResponder.panHandlers}>
         <CurrentComponent navigation={navigation} />
       </View>
-      <Footer />
 
       {/* Floating Button to Navigate to TileGrid */}
       <TouchableOpacity
@@ -57,7 +52,7 @@ const Home = ({ navigation }: HomeProps) => {
       >
         <Text style={styles.floatingButtonText}>🎯</Text>
       </TouchableOpacity>
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -67,16 +62,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     position: 'relative',
-    backgroundColor: '#F7F9FA',
+    backgroundColor: 'transparent',
   },
   mainscreen: {
     flex: 1,
     width: '100%',
-    justifyContent: 'center',
   },
   floatingButton: {
     position: 'absolute',
-    bottom: 100,
+    bottom: 50,
     right: 20,
     width: 60,
     height: 60,
