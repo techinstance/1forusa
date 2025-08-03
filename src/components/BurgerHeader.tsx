@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, use, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -9,22 +9,12 @@ import {
   ScrollView,
   SafeAreaView,
   Animated,
-  
-//   Platform,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import type { NavigationProp } from '@react-navigation/native';
-
-// Conditionally import BlurView only on supported platforms
-// let BlurView: any = View;
-try {
-//   if (Platform.OS === 'ios' || Platform.OS === 'android') {
-//     BlurView = require('@react-native-community/blur').BlurView;
-//   }
-} catch (error) {
-  console.log('BlurView not available, using fallback');
-}
+import { AsyncStorage } from 'react-native';
+import { getUserProfile } from '../Services/authServices';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -56,16 +46,58 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute();
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+
+  const defaultAvatar =
+    'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?q=80&w=1856&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
+
+  const [userData, setUserData] = useState({
+    name: 'Loading...',
+    phone: 'Loading...',
+    avatar: defaultAvatar,
+  });
   const slideAnim = useRef(new Animated.Value(-300)).current;
   const backgroundOpacity = useRef(new Animated.Value(0)).current;
 
-  // Mock profile data
-  const profileData = {
-    name: 'Emma Johnson',
-    phone: '+1 5907 006 057',
-    avatar:
-      'https://images.unsplash.com/photo-1543610892-0b1f7e6d8ac1?q=80&w=1856&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  };
+  const userFun = useCallback(async () => {
+    try {
+      const userId = await AsyncStorage.getItem('userId');
+      console.log('Fetched user ID:', userId);
+
+      if (userId) {
+        const userProfile = await getUserProfile(userId);
+        console.log('Fetched user data:', userProfile);
+
+        // Handle different response structures
+        let profileData;
+        if (userProfile.user) {
+          profileData = userProfile.user;
+        } else if (userProfile.data && userProfile.data.user) {
+          profileData = userProfile.data.user;
+        } else if (userProfile.data) {
+          profileData = userProfile.data;
+        } else {
+          profileData = userProfile;
+        }
+
+        setUserData({
+          name: profileData.name || profileData.fullName || 'User',
+          phone: profileData.phone || profileData.phoneNumber || 'N/A',
+          avatar:
+            profileData.avatar || profileData.profileImage || defaultAvatar,
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      setUserData({
+        name: 'Guest User',
+        phone: 'N/A',
+        avatar: defaultAvatar,
+      });
+    }
+  }, [defaultAvatar]);
+  useEffect(() => {
+    userFun();
+  }, [userFun]);
 
   const menuItems: MenuItem[] = [
     { name: 'Home', icon: 'home', label: 'Home' },
@@ -87,7 +119,7 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
       }),
       Animated.timing(backgroundOpacity, {
         toValue: 1,
-        duration: 150, // Reduced from 300ms to 150ms
+        duration: 150,
         useNativeDriver: true,
       }),
     ]).start(() => {
@@ -200,12 +232,12 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
               {/* Profile Section */}
               <View style={styles.profileSection}>
                 <Image
-                  source={{ uri: profileData.avatar }}
+                  source={{ uri: userData.avatar }}
                   style={styles.profileImage}
                 />
                 <View style={styles.profileInfo}>
-                  <Text style={styles.profileName}>{profileData.name}</Text>
-                  <Text style={styles.profilePhone}>{profileData.phone}</Text>
+                  <Text style={styles.profileName}>{userData.name}</Text>
+                  <Text style={styles.profilePhone}>{userData.phone}</Text>
                 </View>
                 <TouchableOpacity style={styles.nightModeButton}>
                   <Icon name="moon-o" size={18} color="#8E8E93" />
@@ -290,7 +322,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#007AFF',
     paddingHorizontal: 16,
     paddingVertical: 12,
     paddingTop: 50, // Account for status bar
