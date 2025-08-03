@@ -308,11 +308,90 @@ const ActivitiesScreen = () => {
       id: '10',
       title: '📊 Dashboard Snapshot',
       content: (
-        <View style={styles.dashboard}>
-          <Text>🎯 Daily Goal: {dailyGoal ? '✅' : '❌'}</Text>
-          <Text>⚡ 1-Min Activity: {oneMinActivity ? '✅' : '❌'}</Text>
-          <Text>⏱️ 5-Min Activity: {fiveMinActivity ? '✅' : '❌'}</Text>
-          <Text>📅 Weekly Goals: {weeklyGoals.filter(g => g).length}/3</Text>
+        <View style={styles.dashboardWrapper}>
+          <View style={styles.dashboard}>
+            <Text style={styles.dashboardTitle}>Progress Overview</Text>
+
+            <View style={styles.progressGrid}>
+              <View style={styles.progressItem}>
+                <View style={styles.progressIcon}>
+                  <Text style={styles.progressEmoji}>🎯</Text>
+                </View>
+                <View style={styles.progressInfo}>
+                  <Text style={styles.progressLabel}>Daily Goal</Text>
+                  <Text style={styles.progressStatus}>
+                    {dailyGoal ? '✅ Completed' : '⏳ Pending'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.progressItem}>
+                <View style={styles.progressIcon}>
+                  <Text style={styles.progressEmoji}>⚡</Text>
+                </View>
+                <View style={styles.progressInfo}>
+                  <Text style={styles.progressLabel}>1-Min Focus</Text>
+                  <Text style={styles.progressStatus}>
+                    {oneMinActivity ? '✅ Set' : '⏳ Not Set'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.progressItem}>
+                <View style={styles.progressIcon}>
+                  <Text style={styles.progressEmoji}>⏱️</Text>
+                </View>
+                <View style={styles.progressInfo}>
+                  <Text style={styles.progressLabel}>5-Min Activity</Text>
+                  <Text style={styles.progressStatus}>
+                    {fiveMinActivity ? '✅ Set' : '⏳ Not Set'}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.progressItem}>
+                <View style={styles.progressIcon}>
+                  <Text style={styles.progressEmoji}>📅</Text>
+                </View>
+                <View style={styles.progressInfo}>
+                  <Text style={styles.progressLabel}>Weekly Goals</Text>
+                  <Text style={styles.progressStatus}>
+                    {weeklyGoals.filter(g => g).length}/3 Complete
+                  </Text>
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.completionBar}>
+              <Text style={styles.completionText}>Overall Progress</Text>
+              <View style={styles.progressBarContainer}>
+                <View
+                  style={[
+                    styles.progressBar,
+                    {
+                      width: `${
+                        ((dailyGoal ? 1 : 0) +
+                          (oneMinActivity ? 1 : 0) +
+                          (fiveMinActivity ? 1 : 0) +
+                          weeklyGoals.filter(g => g).length / 3) *
+                        25
+                      }%`,
+                    },
+                  ]}
+                />
+              </View>
+              <Text style={styles.progressPercentage}>
+                {Math.round(
+                  ((dailyGoal ? 1 : 0) +
+                    (oneMinActivity ? 1 : 0) +
+                    (fiveMinActivity ? 1 : 0) +
+                    weeklyGoals.filter(g => g).length / 3) *
+                    25,
+                )}
+                %
+              </Text>
+            </View>
+          </View>
         </View>
       ),
     },
@@ -426,10 +505,8 @@ const ActivitiesScreen = () => {
   return (
     <View style={styles.container}>
       <Text variant="headlineMedium" style={styles.title}>
-        🗓️ Daily Goal Tracker
+        Daily Goal Tracker
       </Text>
-
-  
 
       {/* Carousel */}
       <FlatList
@@ -604,17 +681,109 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dashboard: {
-    backgroundColor: '#E8F4FD',
-    padding: 20,
-    borderRadius: 18,
+    backgroundColor: '#FFFFFF',
+    padding: 24,
+    borderRadius: 20,
     marginBottom: 20,
     borderWidth: 2,
-    borderColor: '#B3D9FF',
+    borderColor: '#E3F2FD',
     shadowColor: '#007AFF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  dashboardWrapper: {
+    marginHorizontal: -5,
+  },
+  dashboardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    textAlign: 'center',
+    marginBottom: 20,
+    letterSpacing: 0.5,
+  },
+  progressGrid: {
+    marginBottom: 24,
+  },
+  progressItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FBFF',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#007AFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 2,
+  },
+  progressIcon: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: '#E3F2FD',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+    borderWidth: 2,
+    borderColor: '#BBDEFB',
+  },
+  progressEmoji: {
+    fontSize: 24,
+  },
+  progressInfo: {
+    flex: 1,
+  },
+  progressLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  progressStatus: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
+  },
+  completionBar: {
+    marginTop: 8,
+  },
+  completionText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  progressBarContainer: {
+    height: 12,
+    backgroundColor: '#E3F2FD',
+    borderRadius: 6,
+    overflow: 'hidden',
+    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: '#BBDEFB',
+  },
+  progressBar: {
+    height: '100%',
+    backgroundColor: 'linear-gradient(90deg, #007AFF 0%, #40A9FF 100%)',
+    borderRadius: 5,
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  progressPercentage: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#007AFF',
+    textAlign: 'center',
   },
   dotsContainer: {
     flexDirection: 'row',
