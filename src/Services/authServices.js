@@ -169,7 +169,14 @@ const getStoredUserData = async () => {
 // Helper function to clear all user data (logout)
 const logout = async () => {
   try {
-    await AsyncStorage.multiRemove(['userId', 'userToken', 'userData']);
+    await AsyncStorage.multiRemove([
+      'userId',
+      'userToken',
+      'userData',
+      'userInterests',
+      'interestSelectionCompleted',
+    ]);
+    console.log('✅ All user data cleared on logout');
     return true;
   } catch (error) {
     console.error('Error during logout:', error);

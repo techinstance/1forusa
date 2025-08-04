@@ -19,7 +19,7 @@ const SignUp = ({ navigation }: SignUp) => {
     signup(name, email, password, confirmPassword)
       .then(() => {
         console.log('Sign Up successful');
-        navigation.navigate('Home');
+        navigation.navigate('InterestSelection');
       })
       .catch(error => {
         console.error('Sign Up error:', error);

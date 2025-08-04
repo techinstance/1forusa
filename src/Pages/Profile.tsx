@@ -7,11 +7,22 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
-import { Text, TextInput, Switch, Button, Avatar } from 'react-native-paper';
+import {
+  Text,
+  TextInput,
+  Switch,
+  Button,
+  Avatar,
+  Chip,
+} from 'react-native-paper';
 import notifee, { AndroidImportance, TriggerType } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import { getStoredUserData, getUserProfile } from '../Services/authServices';
+import {
+  getUserInterests,
+  getAvailableInterests,
+} from '../Services/interestServices';
 
 const ProfileScreen = () => {
   const [userInfo, setUserInfo] = useState({
@@ -101,11 +112,7 @@ const ProfileScreen = () => {
 
   // Function to refresh user data
 
-
   // Refresh data when screen comes into focus (after signup/login)
-
-
-
 
   useEffect(() => {
     const fetchuserprofile = async () => {
@@ -275,6 +282,8 @@ const ProfileScreen = () => {
     fiveMinuteActivities: true,
     weeklyGoals: true,
   });
+
+  const [userInterests, setUserInterests] = useState<string[]>([]);
 
   useEffect(() => {
     AsyncStorage.setItem(

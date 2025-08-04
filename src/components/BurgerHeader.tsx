@@ -13,8 +13,8 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import type { NavigationProp } from '@react-navigation/native';
-import { AsyncStorage } from 'react-native';
-import { getUserProfile } from '../Services/authServices';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserProfile, logout } from '../Services/authServices';
 
 export type RootStackParamList = {
   Splash: undefined;
@@ -101,10 +101,10 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
 
   const menuItems: MenuItem[] = [
     { name: 'Home', icon: 'home', label: 'Home' },
-    { name: 'Social', icon: 'users', label: 'Social Media', badge: 3 },
-    { name: 'Activities', icon: 'calendar', label: 'Activities' },
-    { name: 'TileGrid', icon: 'th', label: 'Wellness Journey' },
-    { name: 'Profile', icon: 'user', label: 'Profile' },
+    { name: 'Social', icon: 'comments', label: 'Social Media', badge: 3 },
+    { name: 'Activities', icon: 'heartbeat', label: 'Activities' },
+    { name: 'TileGrid', icon: 'diamond', label: 'Wellness Journey' },
+    { name: 'Profile', icon: 'user-circle', label: 'Profile' },
   ];
 
   const openMenu = () => {
@@ -161,6 +161,40 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      console.log('🔄 Starting logout process...');
+      closeMenu();
+
+      // Call logout function to clear all user data
+      const success = await logout();
+
+      if (success) {
+        console.log('✅ Logout successful, navigating to Login');
+        // Navigate to Login screen and reset the navigation stack
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+      } else {
+        console.log(
+          '⚠️ Logout completed with warnings, still navigating to Login',
+        );
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+      }
+    } catch (error) {
+      console.error('❌ Error during logout:', error);
+      // Even if logout fails, navigate to login for security
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+    }
+  };
+
   return (
     <>
       <View style={styles.header}>
@@ -191,9 +225,8 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
 
         <View style={styles.rightSection}>
           <TouchableOpacity style={styles.iconButton}>
-            <Icon name="search" size={18} color="#FFFFFF" />
+            <Icon name="bell" size={18} color="#FFFFFF" />
           </TouchableOpacity>
-          {/* Test button - remove this after testing */}
         </View>
       </View>
 
@@ -307,6 +340,23 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
                       style={styles.menuItemIcon}
                     />
                     <Text style={styles.menuItemText}>Help & FAQ</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.menuItem}
+                  onPress={handleLogout}
+                >
+                  <View style={styles.menuItemContent}>
+                    <Icon
+                      name="sign-out"
+                      size={20}
+                      color="#FF3B30"
+                      style={styles.menuItemIcon}
+                    />
+                    <Text style={[styles.menuItemText, styles.logoutText]}>
+                      Logout
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -483,6 +533,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E1E8ED',
     paddingVertical: 10,
+  },
+  logoutText: {
+    color: '#FF3B30',
+    fontWeight: '600',
   },
 });
 

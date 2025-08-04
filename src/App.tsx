@@ -9,6 +9,7 @@ import Social from './Pages/Social';
 import Splash from './screens/SplashScreen';
 import Login from './screens/Auth/Login';
 import SignUp from './screens/Auth/SignUp';
+import InterestSelection from './screens/Auth/InterestSelection';
 import TileGrid from './screens/TileGrid';
 import TileGridDemo from './screens/TileGridDemo';
 import BurgerHeader from './components/BurgerHeader';
@@ -17,6 +18,7 @@ export type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   SignUp: undefined;
+  InterestSelection: undefined;
   Home: undefined;
   Social: undefined;
   Activities: undefined;
@@ -49,6 +51,7 @@ const App = () => {
         <Stack.Screen name="Splash" component={Splash} />
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="InterestSelection" component={InterestSelection} />
         <Stack.Screen
           name="Home"
           component={Home}

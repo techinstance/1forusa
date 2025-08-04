@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, SafeAreaView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Input from '../common/Input';
 import PasswordInput from '../common/PasswordInput';
 import Button from '../common/Button';
@@ -13,13 +14,24 @@ const Login = ({ navigation }: Login) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    login(email, password).then(() => {
-      navigation.navigate('Home');
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
       console.log('Login successful');
-    }).catch((error) => {
+
+      // Check if user has completed interest selection
+      const interestSelectionCompleted = await AsyncStorage.getItem(
+        'interestSelectionCompleted',
+      );
+
+      if (interestSelectionCompleted === 'true') {
+        navigation.navigate('Home');
+      } else {
+        navigation.navigate('InterestSelection');
+      }
+    } catch (error) {
       console.error('Login error:', error);
-    });
+    }
   };
 
   const [remember, setRemember] = useState(false);
