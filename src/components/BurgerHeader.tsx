@@ -9,9 +9,11 @@ import {
   ScrollView,
   SafeAreaView,
   Animated,
+  Alert,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import type { NavigationProp } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserProfile, logout } from '../Services/authServices';
@@ -24,6 +26,7 @@ export type RootStackParamList = {
   Social: undefined;
   Activities: undefined;
   Profile: undefined;
+  Tiles: undefined;
   TileGrid: undefined;
 };
 
@@ -100,11 +103,12 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
   }, [userFun]);
 
   const menuItems: MenuItem[] = [
-    { name: 'Home', icon: 'home', label: 'Home' },
-    { name: 'Social', icon: 'comments', label: 'Social Media', badge: 3 },
-    { name: 'Activities', icon: 'heartbeat', label: 'Activities' },
-    { name: 'TileGrid', icon: 'diamond', label: 'Wellness Journey' },
-    { name: 'Profile', icon: 'user-circle', label: 'Profile' },
+    { name: 'Home', icon: 'home-outline', label: 'Home' },
+    { name: 'Social', icon: 'people-outline', label: 'Social Media', badge: 3 },
+    { name: 'Activities', icon: 'fitness-outline', label: 'Activities' },
+    { name: 'Tiles', icon: 'apps-outline', label: 'Interactive Tiles' },
+    { name: 'TileGrid', icon: 'grid-outline', label: 'Wellness Journey' },
+    { name: 'Profile', icon: 'person-outline', label: 'Profile' },
   ];
 
   const openMenu = () => {
@@ -161,38 +165,26 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      console.log('🔄 Starting logout process...');
-      closeMenu();
-
-      // Call logout function to clear all user data
-      const success = await logout();
-
-      if (success) {
-        console.log('✅ Logout successful, navigating to Login');
-        // Navigate to Login screen and reset the navigation stack
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
-      } else {
-        console.log(
-          '⚠️ Logout completed with warnings, still navigating to Login',
-        );
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
-      }
-    } catch (error) {
-      console.error('❌ Error during logout:', error);
-      // Even if logout fails, navigate to login for security
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
-    }
+  const handleLogout = () => {
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await logout();
+            closeMenu();
+            navigation.navigate('Login');
+          } catch (error) {
+            console.error('Logout error:', error);
+          }
+        },
+      },
+    ]);
   };
 
   return (
@@ -204,7 +196,7 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
               onPress={handleBackPress}
               style={styles.iconButton}
             >
-              <Icon name="arrow-left" size={20} color="#FFFFFF" />
+              <Icon name="arrow-back-outline" size={24} color="#FFFFFF" />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -214,7 +206,7 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
               }}
               style={styles.iconButton}
             >
-              <Icon name="bars" size={20} color="#FFFFFF" />
+              <Icon name="menu-outline" size={24} color="#FFFFFF" />
             </TouchableOpacity>
           )}
         </View>
@@ -225,7 +217,10 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
 
         <View style={styles.rightSection}>
           <TouchableOpacity style={styles.iconButton}>
-            <Icon name="bell" size={18} color="#FFFFFF" />
+            <Icon name="search-outline" size={22} color="#FFFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <Icon name="notifications-outline" size={22} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
       </View>
@@ -273,7 +268,7 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
                   <Text style={styles.profilePhone}>{userData.phone}</Text>
                 </View>
                 <TouchableOpacity style={styles.nightModeButton}>
-                  <Icon name="moon-o" size={18} color="#8E8E93" />
+                  <Icon name="moon-outline" size={20} color="#8E8E93" />
                 </TouchableOpacity>
               </View>
 
@@ -322,8 +317,8 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
                 <TouchableOpacity style={styles.menuItem}>
                   <View style={styles.menuItemContent}>
                     <Icon
-                      name="cog"
-                      size={20}
+                      name="settings-outline"
+                      size={22}
                       color="#333333"
                       style={styles.menuItemIcon}
                     />
@@ -334,8 +329,8 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
                 <TouchableOpacity style={styles.menuItem}>
                   <View style={styles.menuItemContent}>
                     <Icon
-                      name="question-circle"
-                      size={20}
+                      name="help-circle-outline"
+                      size={22}
                       color="#333333"
                       style={styles.menuItemIcon}
                     />
@@ -349,8 +344,8 @@ const BurgerHeader: React.FC<BurgerHeaderProps> = ({
                 >
                   <View style={styles.menuItemContent}>
                     <Icon
-                      name="sign-out"
-                      size={20}
+                      name="log-out-outline"
+                      size={22}
                       color="#FF3B30"
                       style={styles.menuItemIcon}
                     />
@@ -390,8 +385,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rightSection: {
-    width: 40,
-    alignItems: 'flex-end',
+    width: 80,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
   iconButton: {
     padding: 8,

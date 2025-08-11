@@ -6,6 +6,7 @@ import Home from './screens/Home';
 import Activities from './Pages/Activities';
 import Profile from './Pages/Profile';
 import Social from './Pages/Social';
+import Tiles from './Pages/Tiles';
 import Splash from './screens/SplashScreen';
 import Login from './screens/Auth/Login';
 import SignUp from './screens/Auth/SignUp';
@@ -23,6 +24,7 @@ export type RootStackParamList = {
   Social: undefined;
   Activities: undefined;
   Profile: undefined;
+  Tiles: undefined;
   TileGrid: undefined;
   TileGridDemo: undefined;
 };
@@ -34,6 +36,7 @@ const HomeHeader = () => <BurgerHeader title="Home" />;
 const SocialHeader = () => <BurgerHeader title="Social Media" />;
 const ActivitiesHeader = () => <BurgerHeader title="Activities" />;
 const ProfileHeader = () => <BurgerHeader title="Profile" />;
+const TilesHeader = () => <BurgerHeader title="Interactive Tiles" />;
 const TileGridHeader = () => <BurgerHeader title="Wellness Journey" />;
 const TileGridDemoHeader = () => (
   <BurgerHeader title="Tile Demo" showBack={true} />
@@ -82,6 +85,14 @@ const App = () => {
           options={{
             headerShown: true,
             header: ProfileHeader,
+          }}
+        />
+        <Stack.Screen
+          name="Tiles"
+          component={Tiles}
+          options={{
+            headerShown: true,
+            header: TilesHeader,
           }}
         />
         <Stack.Screen

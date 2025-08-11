@@ -1,18 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   Image,
   Alert,
-  FlatList,
-  Dimensions,
-  ScrollView,
 } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-
-const { width: screenWidth } = Dimensions.get('window');
 
 interface Activity {
   id: string;
@@ -26,10 +22,6 @@ interface ListItem {
 }
 
 const Activities: React.FC = () => {
-  // Carousel state
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const flatListRef = useRef<FlatList>(null);
-
   // State variables
   const [dailyGoal, setDailyGoal] = useState('');
   const [yesterdayDone, setYesterdayDone] = useState('');
@@ -41,32 +33,6 @@ const Activities: React.FC = () => {
     { id: '1', text: '' },
   ]);
   const [requests, setRequests] = useState<ListItem[]>([{ id: '1', text: '' }]);
-
-  // Additional text inputs for each activity
-  const [additionalInputs, setAdditionalInputs] = useState<{[key: string]: ListItem[]}>({
-    '1': [{ id: '1', text: '' }],
-    '2': [{ id: '1', text: '' }],
-    '3': [{ id: '1', text: '' }],
-    '4': [{ id: '1', text: '' }],
-    '5': [{ id: '1', text: '' }],
-    '6': [{ id: '1', text: '' }],
-    '7': [{ id: '1', text: '' }],
-    '8': [{ id: '1', text: '' }],
-    '9': [{ id: '1', text: '' }],
-  });
-
-  // Feeling inputs for each activity
-  const [feelings, setFeelings] = useState<{[key: string]: string}>({
-    '1': '',
-    '2': '',
-    '3': '',
-    '4': '',
-    '5': '',
-    '6': '',
-    '7': '',
-    '8': '',
-    '9': '',
-  });
 
   // Timer states
   const [oneMinTimer, setOneMinTimer] = useState(60);
@@ -148,8 +114,8 @@ const Activities: React.FC = () => {
       );
 
       // Add new item if current is being filled and it's the last one
-      const itemIndex = items.findIndex(item => item.id === id);
-      if (text.trim() && itemIndex === items.length - 1) {
+      const currentIndex = items.findIndex(item => item.id === id);
+      if (text.trim() && currentIndex === items.length - 1) {
         setItems(prev => [...prev, { id: Date.now().toString(), text: '' }]);
       }
     };
@@ -185,136 +151,6 @@ const Activities: React.FC = () => {
     );
   };
 
-  // Additional inputs helper
-  const renderAdditionalInputs = (activityId: string) => {
-    const inputs = additionalInputs[activityId] || [];
-    
-    const updateAdditionalInput = (id: string, text: string) => {
-      setAdditionalInputs(prev => ({
-        ...prev,
-        [activityId]: prev[activityId].map(item => 
-          item.id === id ? { ...item, text } : item
-        )
-      }));
-
-      // Add new input if current is being filled and it's the last one
-      const itemIndex = inputs.findIndex(item => item.id === id);
-      if (text.trim() && itemIndex === inputs.length - 1) {
-        setAdditionalInputs(prev => ({
-          ...prev,
-          [activityId]: [...prev[activityId], { id: Date.now().toString(), text: '' }]
-        }));
-      }
-    };
-
-    const removeAdditionalInput = (id: string) => {
-      if (inputs.length > 1) {
-        setAdditionalInputs(prev => ({
-          ...prev,
-          [activityId]: prev[activityId].filter(item => item.id !== id)
-        }));
-      }
-    };
-
-    const addNewInput = () => {
-      setAdditionalInputs(prev => ({
-        ...prev,
-        [activityId]: [...prev[activityId], { id: Date.now().toString(), text: '' }]
-      }));
-    };
-
-    return (
-      <View style={styles.additionalInputsContainer}>
-        <View style={styles.additionalInputsHeader}>
-          <Text style={styles.additionalInputsTitle}>Additional Notes</Text>
-          <TouchableOpacity onPress={addNewInput} style={styles.addButton}>
-            <Text style={styles.addButtonText}>+ Add More</Text>
-          </TouchableOpacity>
-        </View>
-        
-        {inputs.map((item, index) => (
-          <View key={item.id} style={styles.listItemContainer}>
-            <TextInput
-              label={`Note ${index + 1}`}
-              value={item.text}
-              onChangeText={text => updateAdditionalInput(item.id, text)}
-              mode="outlined"
-              style={[styles.input, styles.listInput]}
-              multiline
-            />
-            {inputs.length > 1 && (
-              <TouchableOpacity
-                onPress={() => removeAdditionalInput(item.id)}
-                style={styles.removeButton}
-              >
-                <Text style={styles.removeButtonText}>×</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
-      </View>
-    );
-  };
-
-  // Feeling box helper
-  const renderFeelingBox = (activityId: string) => {
-    return (
-      <View style={styles.feelingContainer}>
-        <Text style={styles.feelingTitle}>💭 How are you feeling?</Text>
-        <TextInput
-          label="Express your current feeling..."
-          value={feelings[activityId] || ''}
-          onChangeText={text => setFeelings(prev => ({ ...prev, [activityId]: text }))}
-          mode="outlined"
-          style={[styles.input, styles.feelingInput]}
-          multiline
-          numberOfLines={3}
-        />
-      </View>
-    );
-  };
-
-  // Carousel functions
-  const handleScroll = (event: any) => {
-    const slideSize = screenWidth * 0.85;
-    const index = Math.round(event.nativeEvent.contentOffset.x / slideSize);
-    setCurrentIndex(index);
-  };
-
-  const renderActivityCard = ({ item }: { item: Activity }) => (
-    <View style={styles.carouselCard}>
-      <Text style={styles.cardTitle}>{item.title}</Text>
-      <ScrollView 
-        style={styles.cardScrollView}
-        contentContainerStyle={styles.cardScrollContent}
-        showsVerticalScrollIndicator={true}
-        nestedScrollEnabled={true}
-      >
-        <View style={styles.cardContent}>{item.content}</View>
-      </ScrollView>
-    </View>
-  );
-
-  const renderPaginationDots = () => (
-    <View style={styles.pagination}>
-      {activities.map((_, index) => (
-        <TouchableOpacity
-          key={index}
-          style={[
-            styles.paginationDot,
-            index === currentIndex
-              ? styles.paginationDotActive
-              : styles.paginationDotInactive,
-          ]}
-          onPress={() => {
-            flatListRef.current?.scrollToIndex({ index, animated: true });
-            setCurrentIndex(index);
-          }}
-        />
-      ))}
-    </View>
-  );
-
   const activities: Activity[] = [
     {
       id: '1',
@@ -333,8 +169,6 @@ const Activities: React.FC = () => {
             mode="outlined"
             style={styles.input}
           />
-          {renderAdditionalInputs('1')}
-          {renderFeelingBox('1')}
         </React.Fragment>
       ),
     },
@@ -355,8 +189,6 @@ const Activities: React.FC = () => {
             mode="outlined"
             style={styles.input}
           />
-          {renderAdditionalInputs('2')}
-          {renderFeelingBox('2')}
         </React.Fragment>
       ),
     },
@@ -393,8 +225,6 @@ const Activities: React.FC = () => {
               {oneMinActive ? 'Stop' : 'Start 1-Minute'}
             </Button>
           </View>
-          {renderAdditionalInputs('3')}
-          {renderFeelingBox('3')}
         </React.Fragment>
       ),
     },
@@ -431,8 +261,6 @@ const Activities: React.FC = () => {
               {fiveMinActive ? 'Stop' : 'Start 5-Minute'}
             </Button>
           </View>
-          {renderAdditionalInputs('4')}
-          {renderFeelingBox('4')}
         </React.Fragment>
       ),
     },
@@ -455,8 +283,6 @@ const Activities: React.FC = () => {
             numberOfLines={4}
             style={styles.input}
           />
-          {renderAdditionalInputs('5')}
-          {renderFeelingBox('5')}
         </React.Fragment>
       ),
     },
@@ -478,8 +304,6 @@ const Activities: React.FC = () => {
             multiline
             style={styles.input}
           />
-          {renderAdditionalInputs('6')}
-          {renderFeelingBox('6')}
         </React.Fragment>
       ),
     },
@@ -489,7 +313,7 @@ const Activities: React.FC = () => {
       content: (
         <React.Fragment>
           <Image
-            source={require('../components/assets/img/img1.png')}
+            source={require('../components/assets/img/img7.png')}
             style={styles.activityImage}
             resizeMode="cover"
           />
@@ -497,8 +321,6 @@ const Activities: React.FC = () => {
           <Button icon="paperclip" mode="text">
             Attach
           </Button>
-          {renderAdditionalInputs('7')}
-          {renderFeelingBox('7')}
         </React.Fragment>
       ),
     },
@@ -508,7 +330,7 @@ const Activities: React.FC = () => {
       content: (
         <React.Fragment>
           <Image
-            source={require('../components/assets/img/img2.png')}
+            source={require('../components/assets/img/img8.png')}
             style={styles.activityImage}
             resizeMode="cover"
           />
@@ -516,8 +338,6 @@ const Activities: React.FC = () => {
           <Button icon="paperclip" mode="text">
             Attach
           </Button>
-          {renderAdditionalInputs('8')}
-          {renderFeelingBox('8')}
         </React.Fragment>
       ),
     },
@@ -527,7 +347,7 @@ const Activities: React.FC = () => {
       content: (
         <React.Fragment>
           <Image
-            source={require('../components/assets/img/img3.png')}
+            source={require('../components/assets/img/img9.png')}
             style={styles.activityImage}
             resizeMode="cover"
           />
@@ -598,15 +418,13 @@ const Activities: React.FC = () => {
               </View>
             </View>
           </View>
-          {renderAdditionalInputs('9')}
-          {renderFeelingBox('9')}
         </React.Fragment>
       ),
     },
   ];
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <Text style={styles.title}>Daily Activities</Text>
         <Text style={styles.subtitle}>
@@ -614,30 +432,17 @@ const Activities: React.FC = () => {
         </Text>
       </View>
 
-      <View style={styles.carouselContainer}>
-        <FlatList
-          ref={flatListRef}
-          data={activities}
-          renderItem={renderActivityCard}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-          scrollEventThrottle={16}
-          snapToInterval={screenWidth * 0.85}
-          decelerationRate="fast"
-          contentContainerStyle={styles.carouselContentContainer}
-          keyExtractor={item => item.id}
-          removeClippedSubviews={false} // Prevent content clipping
-          initialNumToRender={3} // Render more items initially
-          maxToRenderPerBatch={3} // Render more items per batch
-        />
+      <View style={styles.activitiesContainer}>
+        {activities.map(activity => (
+          <View key={activity.id} style={styles.activityCard}>
+            <Text style={styles.activityTitle}>{activity.title}</Text>
+            <View style={styles.activityContent}>{activity.content}</View>
+          </View>
+        ))}
       </View>
 
-      {renderPaginationDots()}
-
       <View style={styles.bottomSpacing} />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -647,7 +452,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   header: {
-    padding: 5,
+    padding: 20,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
@@ -661,69 +466,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
-  },
-  carouselContainer: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  carouselContentContainer: {
-    paddingHorizontal: screenWidth * 0.075,
-  },
-  carouselCard: {
-    width: screenWidth * 0.85,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 20,
-    marginHorizontal: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
-    height: 650, // Fixed height for consistent card size
-  },
-  cardTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  cardScrollView: {
-    flex: 1,
-  },
-  cardScrollContent: {
-    paddingBottom: 20, // Extra padding at bottom
-    flexGrow: 1,
-  },
-  cardContent: {
-    gap: 12,
-    minHeight: 500, // Minimum height to ensure content fits
-  },
-  pagination: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 20,
-    paddingBottom: 2,
-  },
-  paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
-  },
-  paginationDotActive: {
-    backgroundColor: '#007AFF',
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  paginationDotInactive: {
-    backgroundColor: '#C7C7CC',
   },
   activitiesContainer: {
     padding: 16,
@@ -752,8 +494,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   activityImage: {
-    width: 230,
-    height: 300,
+    width: 120,
+    height: 110,
     alignSelf: 'center',
     marginVertical: 8,
     borderRadius: 12,
@@ -888,52 +630,6 @@ const styles = StyleSheet.create({
   },
   bottomSpacing: {
     height: 50,
-  },
-  additionalInputsContainer: {
-    marginTop: 16,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 8,
-    padding: 12,
-  },
-  additionalInputsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  additionalInputsTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-  },
-  addButton: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  feelingContainer: {
-    marginTop: 16,
-    backgroundColor: '#fff5f5',
-    borderRadius: 8,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#ffe0e0',
-  },
-  feelingTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#d63384',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  feelingInput: {
-    backgroundColor: '#fff',
   },
 });
 

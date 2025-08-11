@@ -18,11 +18,13 @@ import {
 import notifee, { AndroidImportance, TriggerType } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { getStoredUserData, getUserProfile } from '../Services/authServices';
 import {
   getUserInterests,
   getAvailableInterests,
 } from '../Services/interestServices';
+import InteractiveProfileTiles from '../components/InteractiveProfileTiles';
 
 const ProfileScreen = () => {
   const [userInfo, setUserInfo] = useState({
@@ -273,6 +275,8 @@ const ProfileScreen = () => {
   ]);
 
   const [userRequests, setUserRequests] = useState(['', '', '', '', '']);
+
+  const [viewMode, setViewMode] = useState<'carousel' | 'tiles'>('tiles');
 
   const [notificationPrefs, setNotificationPrefs] = useState({
     goals: true,
@@ -623,42 +627,85 @@ const ProfileScreen = () => {
       </View>
 
       <View style={styles.carouselContainer}>
-        <Text variant="titleMedium" style={styles.carouselTitle}>
-          Personal Growth Journey
-        </Text>
+        <View style={styles.viewModeHeader}>
+          <Text variant="titleMedium" style={styles.carouselTitle}>
+            Personal Growth Journey
+          </Text>
 
-        <View style={styles.pageIndicators}>
-          {carouselData.map((_, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.pageIndicator,
-                currentPage === index && styles.activePageIndicator,
-              ]}
-              onPress={() => {
-                setCurrentPage(index);
-                flatListRef.current?.scrollToIndex({ index, animated: true });
-              }}
+          <TouchableOpacity
+            style={styles.viewToggle}
+            onPress={() =>
+              setViewMode(prev => (prev === 'carousel' ? 'tiles' : 'carousel'))
+            }
+          >
+            <Icon
+              name={viewMode === 'carousel' ? 'grid-outline' : 'albums-outline'}
+              size={20}
+              color="#007AFF"
             />
-          ))}
+            <Text style={styles.viewToggleText}>
+              {viewMode === 'carousel' ? 'Tile View' : 'Card View'}
+            </Text>
+          </TouchableOpacity>
         </View>
 
-        <FlatList
-          ref={flatListRef}
-          data={carouselData}
-          renderItem={renderCarouselItem}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          onMomentumScrollEnd={event => {
-            const pageIndex = Math.round(
-              event.nativeEvent.contentOffset.x /
-                Dimensions.get('window').width,
-            );
-            setCurrentPage(pageIndex);
-          }}
-          style={styles.carousel}
-        />
+        {viewMode === 'tiles' ? (
+          <InteractiveProfileTiles
+            dailyGoals={dailyGoals}
+            setDailyGoals={setDailyGoals}
+            weeklyGoals={weeklyGoals}
+            setWeeklyGoals={setWeeklyGoals}
+            notToDoList={notToDoList}
+            setNotToDoList={setNotToDoList}
+            completedActivities={completedActivities}
+            setCompletedActivities={setCompletedActivities}
+            userRequests={userRequests}
+            setUserRequests={setUserRequests}
+            yesterdayGoalsComplete={yesterdayGoalsComplete}
+            setYesterdayGoalsComplete={setYesterdayGoalsComplete}
+            goalAchievementPlan={goalAchievementPlan}
+            setGoalAchievementPlan={setGoalAchievementPlan}
+            onSaveProfile={handleSaveProfile}
+          />
+        ) : (
+          <>
+            <View style={styles.pageIndicators}>
+              {carouselData.map((_, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[
+                    styles.pageIndicator,
+                    currentPage === index && styles.activePageIndicator,
+                  ]}
+                  onPress={() => {
+                    setCurrentPage(index);
+                    flatListRef.current?.scrollToIndex({
+                      index,
+                      animated: true,
+                    });
+                  }}
+                />
+              ))}
+            </View>
+
+            <FlatList
+              ref={flatListRef}
+              data={carouselData}
+              renderItem={renderCarouselItem}
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              onMomentumScrollEnd={event => {
+                const pageIndex = Math.round(
+                  event.nativeEvent.contentOffset.x /
+                    Dimensions.get('window').width,
+                );
+                setCurrentPage(pageIndex);
+              }}
+              style={styles.carousel}
+            />
+          </>
+        )}
       </View>
 
       <View style={styles.card}>
@@ -821,6 +868,31 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 16,
+  },
+  viewModeHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  viewToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  viewToggleText: {
+    fontSize: 12,
+    color: '#007AFF',
+    marginLeft: 4,
+    fontWeight: '600',
   },
   pageIndicators: {
     flexDirection: 'row',
