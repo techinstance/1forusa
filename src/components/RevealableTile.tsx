@@ -54,7 +54,9 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
   const [selectedRadio, setSelectedRadio] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const [clickCount, setClickCount] = useState(0);
-  const [colorButtonRevealed, setColorButtonRevealed] = useState<'good' | 'bad' | null>(null);
+  const [colorButtonRevealed, setColorButtonRevealed] = useState<
+    'good' | 'bad' | null
+  >(null);
   const [shakeAnimation, setShakeAnimation] = useState(false);
 
   const flipAnimation = useRef(new Animated.Value(0)).current;
@@ -73,7 +75,7 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
         text: '#FFFFFF',
       };
     }
-    
+
     // For revealed tiles, show the original color scheme
     switch (tile.type) {
       case 'good':
@@ -124,26 +126,64 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
     switch (type) {
       case 'bounce':
         Animated.sequence([
-          Animated.timing(scale, { toValue: 0.8, duration: 100, useNativeDriver: true }),
-          Animated.spring(scale, { toValue: 1.1, useNativeDriver: true, tension: 300, friction: 5 }),
-          Animated.spring(scale, { toValue: 1, useNativeDriver: true, tension: 300, friction: 8 }),
+          Animated.timing(scale, {
+            toValue: 0.8,
+            duration: 100,
+            useNativeDriver: true,
+          }),
+          Animated.spring(scale, {
+            toValue: 1.1,
+            useNativeDriver: true,
+            tension: 300,
+            friction: 5,
+          }),
+          Animated.spring(scale, {
+            toValue: 1,
+            useNativeDriver: true,
+            tension: 300,
+            friction: 8,
+          }),
         ]).start();
         break;
       case 'shake':
         setShakeAnimation(true);
         Animated.sequence([
-          Animated.timing(shakeAnimationValue, { toValue: 10, duration: 50, useNativeDriver: true }),
-          Animated.timing(shakeAnimationValue, { toValue: -10, duration: 50, useNativeDriver: true }),
-          Animated.timing(shakeAnimationValue, { toValue: 10, duration: 50, useNativeDriver: true }),
-          Animated.timing(shakeAnimationValue, { toValue: 0, duration: 50, useNativeDriver: true }),
+          Animated.timing(shakeAnimationValue, {
+            toValue: 10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeAnimationValue, {
+            toValue: -10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeAnimationValue, {
+            toValue: 10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          Animated.timing(shakeAnimationValue, {
+            toValue: 0,
+            duration: 50,
+            useNativeDriver: true,
+          }),
         ]).start(() => setShakeAnimation(false));
         break;
       case 'pulse':
         Animated.loop(
           Animated.sequence([
-            Animated.timing(pulseAnimation, { toValue: 1.05, duration: 600, useNativeDriver: true }),
-            Animated.timing(pulseAnimation, { toValue: 1, duration: 600, useNativeDriver: true }),
-          ])
+            Animated.timing(pulseAnimation, {
+              toValue: 1.05,
+              duration: 600,
+              useNativeDriver: true,
+            }),
+            Animated.timing(pulseAnimation, {
+              toValue: 1,
+              duration: 600,
+              useNativeDriver: true,
+            }),
+          ]),
         ).start();
         break;
     }
@@ -153,12 +193,12 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
     if (style === 'click') {
       // Play click sound
       playSoundEffect('click');
-      
+
       // Handle repeat click requirement
       if (tile.requiresRepeatClick && !isRevealed) {
         const newClickCount = clickCount + 1;
         setClickCount(newClickCount);
-        
+
         const maxClicks = tile.maxClicks || 3;
         if (newClickCount < maxClicks) {
           // Trigger shake animation and show message
@@ -167,9 +207,9 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
           return;
         }
       }
-      
+
       setIsRevealed(!isRevealed);
-      
+
       // Trigger specific animation based on tile type
       if (tile.animationType) {
         triggerAnimation(tile.animationType);
@@ -200,11 +240,11 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
     },
     onPanResponderRelease: (_, gestureState) => {
       const threshold = width * 0.3;
-      
+
       if (Math.abs(gestureState.dx) > threshold) {
         // Reveal content
         setIsRevealed(true);
-        
+
         Animated.parallel([
           Animated.spring(translateX, {
             toValue: gestureState.dx > 0 ? width * 0.7 : -width * 0.7,
@@ -219,7 +259,7 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
             friction: 7,
           }),
         ]).start();
-        
+
         onReveal?.(tile);
       } else {
         // Snap back
@@ -276,10 +316,14 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
     setColorButtonRevealed(type);
     playSoundEffect(type);
     triggerAnimation(type === 'good' ? 'bounce' : 'shake');
-    
+
     // Show appropriate feedback
     setTimeout(() => {
-      console.log(`${type === 'good' ? '🎉' : '😞'} You revealed: ${type === 'good' ? 'Something positive!' : 'Something to work on!'}`);
+      console.log(
+        `${type === 'good' ? '🎉' : '😞'} You revealed: ${
+          type === 'good' ? 'Something positive!' : 'Something to work on!'
+        }`,
+      );
     }, 300);
   };
 
@@ -323,19 +367,27 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
                 <Text style={styles.colorButtonText}>Challenge</Text>
               </TouchableOpacity>
             </View>
-            
+
             {colorButtonRevealed && (
-              <View style={[
-                styles.colorRevealContainer,
-                colorButtonRevealed === 'good' ? styles.goodReveal : styles.badReveal
-              ]}>
-                <Text style={[
-                  styles.colorRevealText,
-                  colorButtonRevealed === 'good' ? styles.goodRevealText : styles.badRevealText
-                ]}>
-                  {colorButtonRevealed === 'good' 
-                    ? "🎉 Great job! You're making positive progress!" 
-                    : "💪 This is an area to focus on. You can improve!"}
+              <View
+                style={[
+                  styles.colorRevealContainer,
+                  colorButtonRevealed === 'good'
+                    ? styles.goodReveal
+                    : styles.badReveal,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.colorRevealText,
+                    colorButtonRevealed === 'good'
+                      ? styles.goodRevealText
+                      : styles.badRevealText,
+                  ]}
+                >
+                  {colorButtonRevealed === 'good'
+                    ? "🎉 Great job! You're making positive progress!"
+                    : '💪 This is an area to focus on. You can improve!'}
                 </Text>
               </View>
             )}
@@ -353,11 +405,15 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
                 style={styles.checkboxRow}
                 onPress={() => handleCheckboxToggle(index)}
               >
-                <View style={[
-                  styles.checkbox,
-                  { borderColor: colors.primary },
-                  selectedCheckboxes[index] && { backgroundColor: colors.primary }
-                ]}>
+                <View
+                  style={[
+                    styles.checkbox,
+                    { borderColor: colors.primary },
+                    selectedCheckboxes[index] && {
+                      backgroundColor: colors.primary,
+                    },
+                  ]}
+                >
                   {selectedCheckboxes[index] && (
                     <Icon name="checkmark" size={16} color="#FFFFFF" />
                   )}
@@ -379,11 +435,15 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
                 style={styles.radioRow}
                 onPress={() => handleRadioSelect(index)}
               >
-                <View style={[
-                  styles.radioButton,
-                  { borderColor: colors.primary },
-                  selectedRadio === index && { backgroundColor: colors.primary }
-                ]}>
+                <View
+                  style={[
+                    styles.radioButton,
+                    { borderColor: colors.primary },
+                    selectedRadio === index && {
+                      backgroundColor: colors.primary,
+                    },
+                  ]}
+                >
                   {selectedRadio === index && (
                     <View style={styles.radioInner} />
                   )}
@@ -391,21 +451,27 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
                 <Text style={styles.optionText}>{option}</Text>
               </TouchableOpacity>
             ))}
-            
+
             {showFeedback && tile.correctAnswer !== undefined && (
-              <View style={[
-                styles.feedbackContainer,
-                selectedRadio === tile.correctAnswer 
-                  ? { backgroundColor: colors.background }
-                  : styles.feedbackContainerError
-              ]}>
-                <Text style={[
-                  styles.feedbackText,
-                  selectedRadio === tile.correctAnswer 
-                    ? { color: colors.primary }
-                    : styles.feedbackTextError
-                ]}>
-                  {selectedRadio === tile.correctAnswer ? '✅ Correct!' : '❌ Try again!'}
+              <View
+                style={[
+                  styles.feedbackContainer,
+                  selectedRadio === tile.correctAnswer
+                    ? { backgroundColor: colors.background }
+                    : styles.feedbackContainerError,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.feedbackText,
+                    selectedRadio === tile.correctAnswer
+                      ? { color: colors.primary }
+                      : styles.feedbackTextError,
+                  ]}
+                >
+                  {selectedRadio === tile.correctAnswer
+                    ? '✅ Correct!'
+                    : '❌ Try again!'}
                 </Text>
               </View>
             )}
@@ -419,7 +485,7 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
           >
             <Text style={styles.submitButtonText}>Submit</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity
             style={[styles.resetButton, { borderColor: colors.primary }]}
             onPress={() => {
@@ -442,10 +508,7 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
   return (
     <View style={styles.container}>
       <Animated.View
-        style={[
-          styles.tileWrapper,
-          { transform: [{ scale }] }
-        ]}
+        style={[styles.tileWrapper, { transform: [{ scale }] }]}
         {...gestureProps}
       >
         {/* Front of tile */}
@@ -456,10 +519,10 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
             {
               opacity: frontOpacity,
               transform: [
-                { rotateY: flipInterpolate }, 
+                { rotateY: flipInterpolate },
                 { translateX },
                 { translateX: shakeAnimation ? shakeAnimationValue : 0 },
-                { scale: tile.animationType === 'pulse' ? pulseAnimation : 1 }
+                { scale: tile.animationType === 'pulse' ? pulseAnimation : 1 },
               ],
             },
           ]}
@@ -470,31 +533,35 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
             activeOpacity={0.8}
           >
             <View style={styles.iconContainer}>
-              <Icon 
-                name="help-circle-outline" 
-                size={40} 
-                color="#FFFFFF" 
-              />
+              <Icon name="help-circle-outline" size={40} color="#FFFFFF" />
             </View>
             <Text style={styles.tileTitle}>Tap to Reveal</Text>
-            
-            {tile.requiresRepeatClick && clickCount > 0 && clickCount < (tile.maxClicks || 3) && (
-              <View style={styles.repeatClickContainer}>
-                <Text style={styles.repeatClickText}>
-                  Click {clickCount}/{tile.maxClicks || 3} - Keep clicking!
-                </Text>
-              </View>
-            )}
-            
+
+            {tile.requiresRepeatClick &&
+              clickCount > 0 &&
+              clickCount < (tile.maxClicks || 3) && (
+                <View style={styles.repeatClickContainer}>
+                  <Text style={styles.repeatClickText}>
+                    Click {clickCount}/{tile.maxClicks || 3} - Keep clicking!
+                  </Text>
+                </View>
+              )}
+
             <View style={styles.hintContainer}>
-              <Icon 
-                name={style === 'click' ? 'hand-left-outline' : 'swap-horizontal-outline'} 
-                size={16} 
-                color="#FFFFFF80" 
+              <Icon
+                name={
+                  style === 'click'
+                    ? 'hand-left-outline'
+                    : 'swap-horizontal-outline'
+                }
+                size={16}
+                color="#FFFFFF80"
               />
               <Text style={styles.hintText}>
                 {style === 'click' ? 'Tap to reveal' : 'Swipe to reveal'}
-                {tile.requiresRepeatClick && clickCount === 0 && ` (${tile.maxClicks || 3} times)`}
+                {tile.requiresRepeatClick &&
+                  clickCount === 0 &&
+                  ` (${tile.maxClicks || 3} times)`}
               </Text>
             </View>
           </TouchableOpacity>
@@ -520,16 +587,15 @@ const RevealableTile: React.FC<RevealableTileProps> = ({
               <Text style={[styles.revealedText, { color: colors.text }]}>
                 {tile.hiddenContent || tile.content}
               </Text>
-              
+
               {tile.description && (
                 <Text style={[styles.description, { color: colors.text }]}>
                   {tile.description}
                 </Text>
               )}
 
-              {(tile.requiresInput || tile.hasCheckboxes || tile.hasRadio) && 
-                renderInteractiveContent()
-              }
+              {(tile.requiresInput || tile.hasCheckboxes || tile.hasRadio) &&
+                renderInteractiveContent()}
             </View>
           </ScrollView>
         </Animated.View>
@@ -545,7 +611,8 @@ export const sampleTileData: TileData[] = [
     title: 'Daily Meditation',
     content: 'Practice mindfulness',
     type: 'good',
-    hiddenContent: 'Congratulations! You\'ve maintained a 7-day meditation streak! 🧘‍♀️',
+    hiddenContent:
+      "Congratulations! You've maintained a 7-day meditation streak! 🧘‍♀️",
     description: 'Meditation helps reduce stress and improve focus.',
     animationType: 'bounce',
     soundEffect: 'good',
@@ -555,7 +622,8 @@ export const sampleTileData: TileData[] = [
     title: 'Skipped Workout',
     content: 'Missed exercise today',
     type: 'bad',
-    hiddenContent: 'Don\'t worry! Tomorrow is a new opportunity to get back on track. 💪',
+    hiddenContent:
+      "Don't worry! Tomorrow is a new opportunity to get back on track. 💪",
     description: 'Regular exercise boosts mood and energy levels.',
     animationType: 'shake',
     soundEffect: 'bad',
@@ -577,7 +645,12 @@ export const sampleTileData: TileData[] = [
     type: 'neutral',
     hiddenContent: 'Select your current wellness areas',
     hasCheckboxes: true,
-    options: ['Physical Health', 'Mental Health', 'Social Connections', 'Sleep Quality'],
+    options: [
+      'Physical Health',
+      'Mental Health',
+      'Social Connections',
+      'Sleep Quality',
+    ],
     description: 'Regular check-ins help track your overall wellness.',
     animationType: 'bounce',
   },

@@ -24,7 +24,9 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
   onTileInteraction,
   onTileReveal,
 }) => {
-  const [selectedSection, setSelectedSection] = useState<'click' | 'swipe' | 'mixed'>('mixed');
+  const [selectedSection, setSelectedSection] = useState<
+    'click' | 'swipe' | 'mixed'
+  >('mixed');
   const [revealedTiles, setRevealedTiles] = useState<Set<string>>(new Set());
   const [selectedTile, setSelectedTile] = useState<any>(null);
   const [userProgress, setUserProgress] = useState({
@@ -68,15 +70,19 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
       ...prev,
       totalInteractions: prev.totalInteractions + 1,
     }));
-    
+
     onTileInteraction?.(tile.id, data);
-    
+
     // Show feedback based on interaction
-    if (data.input || data.checkboxes?.some((c: boolean) => c) || data.radio !== null) {
+    if (
+      data.input ||
+      data.checkboxes?.some((c: boolean) => c) ||
+      data.radio !== null
+    ) {
       Alert.alert(
         'Response Recorded!',
         'Thank you for your input. Your progress has been saved.',
-        [{ text: 'Continue', style: 'default' }]
+        [{ text: 'Continue', style: 'default' }],
       );
     }
   };
@@ -108,13 +114,13 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
             });
           },
         },
-      ]
+      ],
     );
   };
 
   const renderProgressBar = () => {
     const progress = revealedTiles.size / sampleTileData.length;
-    
+
     return (
       <View style={styles.progressContainer}>
         <View style={styles.progressHeader}>
@@ -123,20 +129,19 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
             <Icon name="refresh-outline" size={16} color="#666" />
           </TouchableOpacity>
         </View>
-        
+
         <View style={styles.progressBar}>
-          <Animated.View 
-            style={[
-              styles.progressFill,
-              { width: `${progress * 100}%` }
-            ]} 
+          <Animated.View
+            style={[styles.progressFill, { width: `${progress * 100}%` }]}
           />
         </View>
-        
+
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
             <Icon name="checkmark-circle" size={16} color="#4CAF50" />
-            <Text style={styles.statText}>{userProgress.completedTiles} Completed</Text>
+            <Text style={styles.statText}>
+              {userProgress.completedTiles} Completed
+            </Text>
           </View>
           <View style={styles.statItem}>
             <Icon name="flash" size={16} color="#FF9800" />
@@ -144,7 +149,9 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
           </View>
           <View style={styles.statItem}>
             <Icon name="analytics" size={16} color="#2196F3" />
-            <Text style={styles.statText}>{userProgress.totalInteractions} Interactions</Text>
+            <Text style={styles.statText}>
+              {userProgress.totalInteractions} Interactions
+            </Text>
           </View>
         </View>
       </View>
@@ -157,19 +164,21 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
         <TouchableOpacity
           style={[
             styles.sectionButton,
-            selectedSection === 'click' && styles.sectionButtonActive
+            selectedSection === 'click' && styles.sectionButtonActive,
           ]}
           onPress={() => changeSectionWithAnimation('click')}
         >
-          <Icon 
-            name="hand-left-outline" 
-            size={18} 
-            color={selectedSection === 'click' ? '#FFFFFF' : '#666'} 
+          <Icon
+            name="hand-left-outline"
+            size={18}
+            color={selectedSection === 'click' ? '#FFFFFF' : '#666'}
           />
-          <Text style={[
-            styles.sectionButtonText,
-            selectedSection === 'click' && styles.sectionButtonTextActive
-          ]}>
+          <Text
+            style={[
+              styles.sectionButtonText,
+              selectedSection === 'click' && styles.sectionButtonTextActive,
+            ]}
+          >
             Click to Reveal
           </Text>
         </TouchableOpacity>
@@ -177,19 +186,21 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
         <TouchableOpacity
           style={[
             styles.sectionButton,
-            selectedSection === 'swipe' && styles.sectionButtonActive
+            selectedSection === 'swipe' && styles.sectionButtonActive,
           ]}
           onPress={() => changeSectionWithAnimation('swipe')}
         >
-          <Icon 
-            name="swap-horizontal-outline" 
-            size={18} 
-            color={selectedSection === 'swipe' ? '#FFFFFF' : '#666'} 
+          <Icon
+            name="swap-horizontal-outline"
+            size={18}
+            color={selectedSection === 'swipe' ? '#FFFFFF' : '#666'}
           />
-          <Text style={[
-            styles.sectionButtonText,
-            selectedSection === 'swipe' && styles.sectionButtonTextActive
-          ]}>
+          <Text
+            style={[
+              styles.sectionButtonText,
+              selectedSection === 'swipe' && styles.sectionButtonTextActive,
+            ]}
+          >
             Swipe to Reveal
           </Text>
         </TouchableOpacity>
@@ -197,19 +208,21 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
         <TouchableOpacity
           style={[
             styles.sectionButton,
-            selectedSection === 'mixed' && styles.sectionButtonActive
+            selectedSection === 'mixed' && styles.sectionButtonActive,
           ]}
           onPress={() => changeSectionWithAnimation('mixed')}
         >
-          <Icon 
-            name="grid-outline" 
-            size={18} 
-            color={selectedSection === 'mixed' ? '#FFFFFF' : '#666'} 
+          <Icon
+            name="grid-outline"
+            size={18}
+            color={selectedSection === 'mixed' ? '#FFFFFF' : '#666'}
           />
-          <Text style={[
-            styles.sectionButtonText,
-            selectedSection === 'mixed' && styles.sectionButtonTextActive
-          ]}>
+          <Text
+            style={[
+              styles.sectionButtonText,
+              selectedSection === 'mixed' && styles.sectionButtonTextActive,
+            ]}
+          >
             Mixed Feed
           </Text>
         </TouchableOpacity>
@@ -219,11 +232,11 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
 
   const renderTileSection = (tiles: any[], style: 'click' | 'swipe') => {
     return (
-      <ScrollView 
+      <ScrollView
         style={styles.tileContainer}
         showsVerticalScrollIndicator={false}
       >
-        {tiles.map((tile) => (
+        {tiles.map(tile => (
           <RevealableTile
             key={tile.id}
             tile={tile}
@@ -239,11 +252,12 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
   const renderMixedFeed = () => {
     const mixedTiles = [...sampleTileData].map((tile, index) => ({
       ...tile,
-      preferredStyle: index % 2 === 0 ? 'click' : 'swipe' as 'click' | 'swipe',
+      preferredStyle:
+        index % 2 === 0 ? 'click' : ('swipe' as 'click' | 'swipe'),
     }));
 
     return (
-      <ScrollView 
+      <ScrollView
         style={styles.tileContainer}
         showsVerticalScrollIndicator={false}
       >
@@ -251,7 +265,7 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
           <Icon name="newspaper-outline" size={24} color="#333" />
           <Text style={styles.feedTitle}>Interactive Wellness Feed</Text>
         </View>
-        
+
         {mixedTiles.map((tile, index) => (
           <View key={tile.id} style={styles.feedItem}>
             {index % 3 === 0 && (
@@ -260,14 +274,14 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
                 <Text style={styles.feedDividerText}>Recent Activity</Text>
               </View>
             )}
-            
+
             <RevealableTile
               tile={tile}
               style={tile.preferredStyle}
               onReveal={handleTileReveal}
               onInteraction={handleTileInteraction}
             />
-            
+
             {revealedTiles.has(tile.id) && (
               <View style={styles.completionBadge}>
                 <Icon name="checkmark-circle" size={16} color="#4CAF50" />
@@ -276,10 +290,11 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
             )}
           </View>
         ))}
-        
+
         <View style={styles.feedFooter}>
           <Text style={styles.feedFooterText}>
-            You've explored {revealedTiles.size} of {sampleTileData.length} wellness activities
+            You've explored {revealedTiles.size} of {sampleTileData.length}{' '}
+            wellness activities
           </Text>
         </View>
       </ScrollView>
@@ -289,7 +304,7 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
   return (
     <Animated.View style={[styles.container, { opacity: fadeAnimation }]}>
       {renderProgressBar()}
-      
+
       {/* Grid Layout for Tiles */}
       <View style={styles.tilesGridContainer}>
         <FlatList
@@ -311,7 +326,7 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
             </View>
           )}
           numColumns={2}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           contentContainerStyle={styles.gridContent}
           showsVerticalScrollIndicator={false}
         />
@@ -323,7 +338,9 @@ const EnhancedTileSystem: React.FC<EnhancedTileSystemProps> = ({
           <Text style={styles.contentTitle}>Content here</Text>
           <View style={styles.contentBox}>
             <Text style={styles.contentText}>{selectedTile.hiddenContent}</Text>
-            <Text style={styles.contentDescription}>{selectedTile.description}</Text>
+            <Text style={styles.contentDescription}>
+              {selectedTile.description}
+            </Text>
           </View>
         </View>
       )}

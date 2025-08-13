@@ -15,34 +15,40 @@ const simpleTileData = [
   {
     id: 'tile1',
     title: 'Wellness',
-    content: 'Focus on your mental and physical health through daily practices like meditation, exercise, and proper nutrition.',
-    emoji: '🧘‍♀️'
+    content:
+      'Focus on your mental and physical health through daily practices like meditation, exercise, and proper nutrition.',
+    emoji: '🧘‍♀️',
   },
   {
-    id: 'tile2', 
+    id: 'tile2',
     title: 'Growth',
-    content: 'Continuous learning and personal development help you become the best version of yourself.',
-    emoji: '🌱'
+    content:
+      'Continuous learning and personal development help you become the best version of yourself.',
+    emoji: '🌱',
   },
   {
     id: 'tile3',
     title: 'Connection',
-    content: 'Building meaningful relationships and maintaining social connections are essential for happiness.',
-    emoji: '❤️'
+    content:
+      'Building meaningful relationships and maintaining social connections are essential for happiness.',
+    emoji: '❤️',
   },
   {
     id: 'tile4',
     title: 'Purpose',
-    content: 'Finding your life purpose and pursuing meaningful goals gives direction and fulfillment to your journey.',
-    emoji: '🎯'
-  }
+    content:
+      'Finding your life purpose and pursuing meaningful goals gives direction and fulfillment to your journey.',
+    emoji: '🎯',
+  },
 ];
 
 interface UltraTileSystemProps {
   onTileInteraction?: (tileId: string, data: any) => void;
 }
 
-const UltraTileSystem: React.FC<UltraTileSystemProps> = ({ onTileInteraction }) => {
+const UltraTileSystem: React.FC<UltraTileSystemProps> = ({
+  onTileInteraction,
+}) => {
   const [selectedTile, setSelectedTile] = useState<any>(null);
 
   // Handle Tile Click
@@ -89,7 +95,9 @@ const UltraTileSystem: React.FC<UltraTileSystemProps> = ({ onTileInteraction }) 
             <Text style={styles.contentText}>{selectedTile.content}</Text>
           </>
         ) : (
-          <Text style={styles.placeholderText}>Click on any tile to see its content here</Text>
+          <Text style={styles.placeholderText}>
+            Click on any tile to see its content here
+          </Text>
         )}
       </View>
     </View>

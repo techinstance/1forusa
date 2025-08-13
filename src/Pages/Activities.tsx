@@ -43,7 +43,9 @@ const Activities: React.FC = () => {
   const [requests, setRequests] = useState<ListItem[]>([{ id: '1', text: '' }]);
 
   // Additional text inputs for each activity
-  const [additionalInputs, setAdditionalInputs] = useState<{[key: string]: ListItem[]}>({
+  const [additionalInputs, setAdditionalInputs] = useState<{
+    [key: string]: ListItem[];
+  }>({
     '1': [{ id: '1', text: '' }],
     '2': [{ id: '1', text: '' }],
     '3': [{ id: '1', text: '' }],
@@ -56,7 +58,7 @@ const Activities: React.FC = () => {
   });
 
   // Feeling inputs for each activity
-  const [feelings, setFeelings] = useState<{[key: string]: string}>({
+  const [feelings, setFeelings] = useState<{ [key: string]: string }>({
     '1': '',
     '2': '',
     '3': '',
@@ -188,13 +190,13 @@ const Activities: React.FC = () => {
   // Additional inputs helper
   const renderAdditionalInputs = (activityId: string) => {
     const inputs = additionalInputs[activityId] || [];
-    
+
     const updateAdditionalInput = (id: string, text: string) => {
       setAdditionalInputs(prev => ({
         ...prev,
-        [activityId]: prev[activityId].map(item => 
-          item.id === id ? { ...item, text } : item
-        )
+        [activityId]: prev[activityId].map(item =>
+          item.id === id ? { ...item, text } : item,
+        ),
       }));
 
       // Add new input if current is being filled and it's the last one
@@ -202,7 +204,10 @@ const Activities: React.FC = () => {
       if (text.trim() && itemIndex === inputs.length - 1) {
         setAdditionalInputs(prev => ({
           ...prev,
-          [activityId]: [...prev[activityId], { id: Date.now().toString(), text: '' }]
+          [activityId]: [
+            ...prev[activityId],
+            { id: Date.now().toString(), text: '' },
+          ],
         }));
       }
     };
@@ -211,7 +216,7 @@ const Activities: React.FC = () => {
       if (inputs.length > 1) {
         setAdditionalInputs(prev => ({
           ...prev,
-          [activityId]: prev[activityId].filter(item => item.id !== id)
+          [activityId]: prev[activityId].filter(item => item.id !== id),
         }));
       }
     };
@@ -219,7 +224,10 @@ const Activities: React.FC = () => {
     const addNewInput = () => {
       setAdditionalInputs(prev => ({
         ...prev,
-        [activityId]: [...prev[activityId], { id: Date.now().toString(), text: '' }]
+        [activityId]: [
+          ...prev[activityId],
+          { id: Date.now().toString(), text: '' },
+        ],
       }));
     };
 
@@ -231,7 +239,7 @@ const Activities: React.FC = () => {
             <Text style={styles.addButtonText}>+ Add More</Text>
           </TouchableOpacity>
         </View>
-        
+
         {inputs.map((item, index) => (
           <View key={item.id} style={styles.listItemContainer}>
             <TextInput
@@ -264,7 +272,9 @@ const Activities: React.FC = () => {
         <TextInput
           label="Express your current feeling..."
           value={feelings[activityId] || ''}
-          onChangeText={text => setFeelings(prev => ({ ...prev, [activityId]: text }))}
+          onChangeText={text =>
+            setFeelings(prev => ({ ...prev, [activityId]: text }))
+          }
           mode="outlined"
           style={[styles.input, styles.feelingInput]}
           multiline
@@ -284,7 +294,7 @@ const Activities: React.FC = () => {
   const renderActivityCard = ({ item }: { item: Activity }) => (
     <View style={styles.carouselCard}>
       <Text style={styles.cardTitle}>{item.title}</Text>
-      <ScrollView 
+      <ScrollView
         style={styles.cardScrollView}
         contentContainerStyle={styles.cardScrollContent}
         showsVerticalScrollIndicator={true}

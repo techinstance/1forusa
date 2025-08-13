@@ -1,9 +1,8 @@
 import React from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-} from 'react-native';
-import InteractiveTileGrid, { defaultWellnessTiles } from '../components/InteractiveTileGrid';
+import { StyleSheet, SafeAreaView } from 'react-native';
+import InteractiveTileGrid, {
+  defaultWellnessTiles,
+} from '../components/InteractiveTileGrid';
 
 const Tiles: React.FC = () => {
   const handleTileInteraction = (tile: any) => {
@@ -18,9 +17,9 @@ const Tiles: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <InteractiveTileGrid 
+      <InteractiveTileGrid
         tiles={simplifiedTiles}
-        onTilePress={handleTileInteraction} 
+        onTilePress={handleTileInteraction}
       />
     </SafeAreaView>
   );

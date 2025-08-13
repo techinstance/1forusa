@@ -20,7 +20,9 @@ import SliderComponent from '../components/elements/SliderComponent';
 import Scroll from '../components/elements/Scroll';
 import TextBoxComponent from '../components/elements/TextBoxComponent';
 import TileGrid from '../components/elements/TileGrid';
-import FloatingActionButton, { wellnessActions } from '../components/FloatingActionButton';
+import FloatingActionButton, {
+  wellnessActions,
+} from '../components/FloatingActionButton';
 
 type HomeProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -33,7 +35,9 @@ const Home = ({ navigation }: HomeProps) => {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState<any>(null);
   const [textInput, setTextInput] = useState('');
-  const [checkboxStates, setCheckboxStates] = useState<{[key: string]: boolean}>({});
+  const [checkboxStates, setCheckboxStates] = useState<{
+    [key: string]: boolean;
+  }>({});
   const [selectedRadio, setSelectedRadio] = useState<string>('');
   const [currentVariation, setCurrentVariation] = useState<string>('');
 
@@ -55,8 +59,8 @@ const Home = ({ navigation }: HomeProps) => {
           { id: 'exercise', label: '30 minutes of exercise' },
           { id: 'meditation', label: '10 minutes of meditation' },
           { id: 'sleep', label: '7+ hours of sleep' },
-        ]
-      }
+        ],
+      },
     ],
     right: [
       {
@@ -68,14 +72,14 @@ const Home = ({ navigation }: HomeProps) => {
           { id: 'money', label: 'Having money', isCorrect: false },
           { id: 'social', label: 'Social media', isCorrect: false },
           { id: 'work', label: 'Working more', isCorrect: false },
-        ]
+        ],
       },
       {
         type: 'textbox',
         title: '🎯 Goal Setting',
         content: 'What is one small goal you want to achieve today?',
         placeholder: 'My goal for today is...',
-      }
+      },
     ],
     up: [
       {
@@ -87,7 +91,7 @@ const Home = ({ navigation }: HomeProps) => {
           { id: 'breakfast', label: 'Healthy breakfast' },
           { id: 'planning', label: 'Plan your day' },
           { id: 'mindfulness', label: 'Mindful breathing' },
-        ]
+        ],
       },
       {
         type: 'radio',
@@ -98,8 +102,8 @@ const Home = ({ navigation }: HomeProps) => {
           { id: '30min', label: '30 minutes', isCorrect: true },
           { id: '60min', label: '60 minutes', isCorrect: false },
           { id: '120min', label: '120 minutes', isCorrect: false },
-        ]
-      }
+        ],
+      },
     ],
     down: [
       {
@@ -117,16 +121,18 @@ const Home = ({ navigation }: HomeProps) => {
           { id: 'tea', label: 'Drink herbal tea' },
           { id: 'journal', label: 'Write in journal' },
           { id: 'room', label: 'Prepare bedroom environment' },
-        ]
-      }
-    ]
+        ],
+      },
+    ],
   };
 
   // Play sound simulation
   const playSound = (soundType: string) => {
     console.log(`🔊 Playing ${soundType} sound effect`);
     // Simulate sound with haptic feedback
-    Alert.alert('🔊 Sound Effect', `Playing ${soundType} sound!`, [{ text: 'OK' }]);
+    Alert.alert('🔊 Sound Effect', `Playing ${soundType} sound!`, [
+      { text: 'OK' },
+    ]);
   };
 
   const showSwipeReward = (direction: string) => {
@@ -147,20 +153,27 @@ const Home = ({ navigation }: HomeProps) => {
     // Play sound based on direction
     const soundTypes = {
       left: 'reflection',
-      right: 'achievement', 
+      right: 'achievement',
       up: 'energy',
-      down: 'calm'
+      down: 'calm',
     };
-    playSound(soundTypes[direction.toLowerCase() as keyof typeof soundTypes] || 'default');
+    playSound(
+      soundTypes[direction.toLowerCase() as keyof typeof soundTypes] ||
+        'default',
+    );
 
     // Get random variation for the direction
-    const variations = swipeVariations[direction.toLowerCase() as keyof typeof swipeVariations] || [];
+    const variations =
+      swipeVariations[
+        direction.toLowerCase() as keyof typeof swipeVariations
+      ] || [];
     if (variations.length > 0) {
-      const randomVariation = variations[Math.floor(Math.random() * variations.length)];
+      const randomVariation =
+        variations[Math.floor(Math.random() * variations.length)];
       setModalContent(randomVariation);
       setCurrentVariation(direction);
       setShowModal(true);
-      
+
       // Reset states for new variation
       setTextInput('');
       setCheckboxStates({});
@@ -182,11 +195,11 @@ const Home = ({ navigation }: HomeProps) => {
             setCurrentIndex(
               prev => (prev - 1 + components.length) % components.length,
             );
-            showSwipeReward("Right");
+            showSwipeReward('Right');
           } else if (gestureState.dx < -50) {
             // Swipe left - go to next component
             setCurrentIndex(prev => (prev + 1) % components.length);
-            showSwipeReward("Left");
+            showSwipeReward('Left');
           }
         }
         // Vertical swipes (up/down) - new functionality with unique rewards
@@ -196,11 +209,11 @@ const Home = ({ navigation }: HomeProps) => {
             setCurrentIndex(
               prev => (prev - 1 + components.length) % components.length,
             );
-            showSwipeReward("Down");
+            showSwipeReward('Down');
           } else if (gestureState.dy < -50) {
-            // Swipe up - cycle through components + special reward  
+            // Swipe up - cycle through components + special reward
             setCurrentIndex(prev => (prev + 1) % components.length);
-            showSwipeReward("Up");
+            showSwipeReward('Up');
           }
         }
       },
@@ -213,7 +226,7 @@ const Home = ({ navigation }: HomeProps) => {
   const toggleCheckbox = (id: string) => {
     setCheckboxStates(prev => ({
       ...prev,
-      [id]: !prev[id]
+      [id]: !prev[id],
     }));
   };
 
@@ -226,18 +239,24 @@ const Home = ({ navigation }: HomeProps) => {
   const handleSubmit = () => {
     if (modalContent) {
       let message = '';
-      
+
       if (modalContent.type === 'textbox') {
-        message = textInput ? `Great reflection: "${textInput}"` : 'Thanks for taking time to reflect!';
+        message = textInput
+          ? `Great reflection: "${textInput}"`
+          : 'Thanks for taking time to reflect!';
       } else if (modalContent.type === 'checkbox') {
-        const completedItems = Object.keys(checkboxStates).filter(key => checkboxStates[key]);
+        const completedItems = Object.keys(checkboxStates).filter(
+          key => checkboxStates[key],
+        );
         message = `You completed ${completedItems.length}/${modalContent.options.length} wellness activities!`;
       } else if (modalContent.type === 'radio') {
-        const selectedOption = modalContent.options.find((opt: any) => opt.id === selectedRadio);
+        const selectedOption = modalContent.options.find(
+          (opt: any) => opt.id === selectedRadio,
+        );
         if (selectedOption) {
-          message = selectedOption.isCorrect ? 
-            '🎉 Correct! You know your wellness facts!' : 
-            '💭 That\'s a common thought, but the correct answer helps your mental health more!';
+          message = selectedOption.isCorrect
+            ? '🎉 Correct! You know your wellness facts!'
+            : "💭 That's a common thought, but the correct answer helps your mental health more!";
         }
       }
 
@@ -254,7 +273,9 @@ const Home = ({ navigation }: HomeProps) => {
     if (modalContent.type === 'textbox') {
       return (
         <View style={styles.variationContent}>
-          <Text style={styles.variationDescription}>{modalContent.content}</Text>
+          <Text style={styles.variationDescription}>
+            {modalContent.content}
+          </Text>
           <TextInput
             style={styles.textInput}
             placeholder={modalContent.placeholder}
@@ -269,7 +290,9 @@ const Home = ({ navigation }: HomeProps) => {
     if (modalContent.type === 'checkbox') {
       return (
         <View style={styles.variationContent}>
-          <Text style={styles.variationDescription}>{modalContent.content}</Text>
+          <Text style={styles.variationDescription}>
+            {modalContent.content}
+          </Text>
           {modalContent.options.map((option: any) => (
             <TouchableOpacity
               key={option.id}
@@ -291,7 +314,9 @@ const Home = ({ navigation }: HomeProps) => {
     if (modalContent.type === 'radio') {
       return (
         <View style={styles.variationContent}>
-          <Text style={styles.variationDescription}>{modalContent.content}</Text>
+          <Text style={styles.variationDescription}>
+            {modalContent.content}
+          </Text>
           {modalContent.options.map((option: any) => (
             <TouchableOpacity
               key={option.id}
@@ -299,7 +324,11 @@ const Home = ({ navigation }: HomeProps) => {
               onPress={() => selectRadio(option.id)}
             >
               <Icon
-                name={selectedRadio === option.id ? 'radio-button-on' : 'radio-button-off'}
+                name={
+                  selectedRadio === option.id
+                    ? 'radio-button-on'
+                    : 'radio-button-off'
+                }
                 size={24}
                 color={selectedRadio === option.id ? '#4CAF50' : '#666'}
               />
@@ -327,7 +356,7 @@ const Home = ({ navigation }: HomeProps) => {
             <ScrollView style={styles.modalContent}>
               <Text style={styles.modalTitle}>{modalContent?.title}</Text>
               {renderVariationContent()}
-              
+
               <View style={styles.modalButtons}>
                 <TouchableOpacity
                   style={[styles.modalButton, styles.cancelButton]}
@@ -347,11 +376,8 @@ const Home = ({ navigation }: HomeProps) => {
         </View>
       </Modal>
 
-      <Animated.View 
-        style={[
-          styles.mainscreen, 
-          { transform: [{ scale: scaleAnim }] }
-        ]} 
+      <Animated.View
+        style={[styles.mainscreen, { transform: [{ scale: scaleAnim }] }]}
         {...panResponder.panHandlers}
       >
         <CurrentComponent navigation={navigation} />
